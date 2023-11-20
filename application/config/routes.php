@@ -53,6 +53,6 @@ $route['default_controller'] = 'home';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-// $route['master/user'] = 'user';
+$route['master/user'] = 'user';
 
 // $route['dtlcomplaint/(:any)'] = 'complaint/dtlcomplaint/$1';

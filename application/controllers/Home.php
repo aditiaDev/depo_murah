@@ -13,13 +13,13 @@ class Home extends CI_Controller {
         //   redirect('front', 'refresh');
     }
 
-	public function index()
-	{
-
-		// $this->load->view('template/back/header');
-        // $this->load->view('template/back/topmenu');
-        $this->load->view('pages/back/home');
-        // $this->load->view('template/back/footer');
-
+	public function index(){
+		$this->load->view('template/back/header');
+    $this->load->view('template/back/sidebar');
+    $this->load->view('template/back/topnav');
+    $this->load->view('pages/back/home');
+    $this->load->view('template/back/footer');
 	}
+
+
 }
