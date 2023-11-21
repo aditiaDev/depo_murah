@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User extends CI_Controller {
+class Cabang extends CI_Controller {
 
     public function __construct(){
         parent::__construct();
@@ -14,21 +14,26 @@ class User extends CI_Controller {
     $this->load->view('template/back/header');
     $this->load->view('template/back/sidebar');
     $this->load->view('template/back/topnav');
-    $this->load->view('pages/back/user');
+    $this->load->view('pages/back/cabang');
     $this->load->view('template/back/footer');
 	}
 
   public function getAllData(){
-    $data['data'] = $this->db->query("SELECT * FROM tb_user ")->result();
+    $data['data'] = $this->db->query("SELECT * FROM tb_cabang")->result();
+    echo json_encode($data);
+  }
+
+  public function getUserKepala(){
+    $data['data'] = $this->db->query("SELECT id_user, nm_pengguna FROM tb_user WHERE LEVEL = 'KEPALA TOKO'")->result();
     echo json_encode($data);
   }
 
   public function generateId(){
-    $unik = 'U'.date('y');
-    $kode = $this->db->query("SELECT MAX(id_user) LAST_NO FROM tb_user WHERE id_user LIKE '".$unik."%'")->row()->LAST_NO;
+    $unik = 'CB';
+    $kode = $this->db->query("SELECT MAX(id_cabang) LAST_NO FROM tb_cabang WHERE id_cabang LIKE '".$unik."%'")->row()->LAST_NO;
     // mengambil angka dari kode barang terbesar, menggunakan fungsi substr
     // dan diubah ke integer dengan (int)
-    $urutan = (int) substr($kode, 3, 5);
+    $urutan = (int) substr($kode, 2, 3);
     
     // bilangan yang diambil ini ditambah 1 untuk menentukan nomor urut berikutnya
     $urutan++;
@@ -38,18 +43,16 @@ class User extends CI_Controller {
     // misalnya perintah sprintf("%03s", 15); maka akan menghasilkan '015'
     // angka yang diambil tadi digabungkan dengan kode huruf yang kita inginkan, misalnya BRG 
     $huruf = $unik;
-    $kode = $huruf . sprintf("%05s", $urutan);
+    $kode = $huruf . sprintf("%03s", $urutan);
     return $kode;
   }
 
   public function saveData(){
     
     $this->load->library('form_validation');
-    $this->form_validation->set_rules('nm_pengguna', 'Nama pengguna', 'required');
-
-    $this->form_validation->set_rules('username', 'Username', 'required|is_unique[tb_user.username]');
-    $this->form_validation->set_rules('password', 'Password', 'required|min_length[6]');
-    $this->form_validation->set_rules('level', 'Level', 'required');
+    $this->form_validation->set_rules('id_user', 'id_user', 'required');
+    $this->form_validation->set_rules('nm_cabang', 'nm_cabang', 'required');
+    $this->form_validation->set_rules('nm_kepala_toko', 'Nama Kepala Cabang', 'required');
 
     if($this->form_validation->run() == FALSE){
       // echo validation_errors();
@@ -61,13 +64,12 @@ class User extends CI_Controller {
     $id = $this->generateId();
     
     $data = array(
-              "id_user" => $id,
-              "nm_pengguna" => $this->input->post('nm_pengguna'),
-              "username" => $this->input->post('username'),
-              "password" => $this->input->post('password'),
-              "level" => $this->input->post('level'),
+              "id_cabang " => $id,
+              "nm_cabang" => $this->input->post('nm_cabang'),
+              "id_user" => $this->input->post('id_user'),
+              "nm_kepala_toko" => $this->input->post('nm_kepala_toko'),
             );
-    $this->db->insert('tb_user', $data);
+    $this->db->insert('tb_cabang', $data);
     $output = array("status" => "success", "message" => "Data Berhasil Disimpan");
     echo json_encode($output);
 
@@ -106,8 +108,8 @@ class User extends CI_Controller {
   }
 
   public function deleteData(){
-    $this->db->where('id_user', $this->input->post('id_user'));
-    $this->db->delete('tb_user');
+    $this->db->where('id_cabang', $this->input->post('id_cabang'));
+    $this->db->delete('tb_cabang');
 
     $output = array("status" => "success", "message" => "Data Berhasil di Hapus");
     echo json_encode($output);

@@ -29,7 +29,7 @@
       <div class="menu_section">
 
         <ul class="nav side-menu">
-          <li class="<?= ($this->uri->segment(1) == 'home') ? 'current-page' : '' ?>"><a href="home"><i class="fa fa-home"></i> Home</a></li>
+          <li class="<?= ($this->uri->segment(1) == 'home' || $this->uri->segment(1) == '') ? 'current-page' : '' ?>"><a href="<?php echo base_url("home")?>"><i class="fa fa-home"></i> Home</a></li>
           <li class="<?= ($this->uri->segment(1) == 'master') ? 'current-page' : '' ?>"><a><i class="fa fa-desktop"></i> Master Data <span class="fa fa-chevron-down"></span></a>
             <ul class="nav child_menu">
               <li><a href="<?php echo base_url("master/user")?>">User</a></li>

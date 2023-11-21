@@ -54,5 +54,6 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $route['master/user'] = 'user';
+$route['master/cabang'] = 'cabang';
 
 // $route['dtlcomplaint/(:any)'] = 'complaint/dtlcomplaint/$1';

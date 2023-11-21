@@ -1,5 +1,6 @@
 <link href="<?php echo base_url(); ?>assets/datatable/datatables.min.css" rel="stylesheet">
 <link href="<?php echo base_url(); ?>assets/toastr/toastr.min.css" rel="stylesheet">
+<link href="<?php echo base_url(); ?>assets/select2/css/select2.min.css" rel="stylesheet">
 <a href="javascript:;" id="add_data" class="float" data-toggle="tooltip" data-placement="left" title="Tambah Data">
   <i class="fa fa-plus my-float"></i>
 </a>
@@ -10,7 +11,7 @@
       <div class="col-md-12 col-sm-12  ">
         <div class="x_panel">
           <div class="x_title">
-            <h2>Data User</h2>
+            <h2>Data Cabang</h2>
             <ul class="nav navbar-right panel_toolbox">
               <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
               </li>
@@ -25,11 +26,9 @@
                 <table class="table table-bordered table-hover table-striped" id="tb_data">
                   <thead>
                     <th class="text-center">No</th>
-                    <th class="text-center">ID User</th>
-                    <th class="text-center">Nama Pengguna</th>
-                    <th class="text-center">Username</th>
-                    <th class="text-center">Password</th>
-                    <th class="text-center">Level</th>
+                    <th class="text-center">ID Cabang</th>
+                    <th class="text-center">Nama Cabang</th>
+                    <th class="text-center">Kepala Cabang</th>
                     <th class="text-center" style="width:110px">Aksi</th>
                   </thead>
                   <tbody></tbody>
@@ -55,26 +54,16 @@
       <div class="modal-body">
         <form id="FRM_DATA">
           <div class="form-group">
-            <label>Nama Pengguna</label>
-            <input type="text" class="form-control" name="nm_pengguna">
+            <label>Nama Cabang</label>
+            <input type="text" class="form-control" name="nm_cabang">
           </div>
           <div class="form-group">
-            <label>Username</label>
-            <input type="text" class="form-control" name="username">
+            <label>Kepala cabang</label>
+            <select name="id_user" class="form-control select2" style="width:100%"></select>
           </div>
           <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="form-control" name="password">
-          </div>
-          <div class="form-group">
-            <label>Level</label>
-            <select name="level" class="form-control">
-              <option value="" disabled selected>-- Pilih --</option>
-              <option value="ADMIN GUDANG">Admin Gudang</option>
-              <option value="KASIR">Kasir</option>
-              <option value="KEPALA TOKO">Kepala Toko</option>
-              <option value="PEMILIK">Pemilik</option>
-            </select>
+            <label>Nama Kepala cabang</label>
+            <input type="text" class="form-control" name="nm_kepala_toko">
           </div>
 
         </form>
@@ -89,8 +78,9 @@
 </div>
 <script src="<?php echo base_url(); ?>assets/template/back/jquery/dist/jquery.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/toastr/toastr.min.js"></script>
+<script src="<?php echo base_url(); ?>assets/select2/js/select2.min.js"></script>
 <script>
-  // $.noConflict();
+
   var save_method;
   var id_data;
   var tb_data;
@@ -98,7 +88,29 @@
   $(document).ready(function () {
     REFRESH_DATA()
   })
+
+  // $(".select2").select2()
   
+  ISI_SELECT()
+  function ISI_SELECT(){
+    $.ajax({
+      url: "<?php echo site_url('cabang/getUserKepala') ?>",
+      type: "POST",
+      dataType: "JSON",
+      success: function(data){
+        let row='<option value="" disabled selected>Pilih</option>'
+        $.map(data.data, function (item) {
+          row += "<option value='"+item.id_user+"' dtl='"+item.nm_pengguna+"'>"+item.id_user+" - "+item.nm_pengguna+"</option>"
+        })
+        $("[name='id_user']").html(row)
+      }
+    })
+  }
+
+  $("[name='id_user']").change(function(){
+    let nm_kepala = $("[name='id_user'] option:selected").attr('dtl')
+    $("[name='nm_kepala_toko']").val(nm_kepala)
+  })
 
   $("#add_data").click(function(){
     $("#FRM_DATA")[0].reset()
@@ -111,10 +123,10 @@
     event.preventDefault();
     var formData = $("#FRM_DATA").serialize();
     if(save_method == 'save') {
-        urlPost = "<?php echo site_url('user/saveData') ?>";
+        urlPost = "<?php echo site_url('cabang/saveData') ?>";
     }else{
-        urlPost = "<?php echo site_url('user/updateData') ?>";
-        formData+="&id_user="+id_data
+        urlPost = "<?php echo site_url('cabang/updateData') ?>";
+        formData+="&id_cabang="+id_data
     }
 
     ACTION(urlPost, formData)
@@ -154,7 +166,7 @@
         "autoWidth": false,
         "responsive": true,
         "ajax": {
-            "url": "<?php echo site_url('user/getAllData') ?>",
+            "url": "<?php echo site_url('cabang/getAllData') ?>",
             "type": "POST",
         },
         "columns": [
@@ -165,15 +177,17 @@
                 }
                 , className: "text-center"
             },
-            { "data": "id_user", className: "text-center" },
-            { "data": "nm_pengguna"},
-            { "data": "username"},
-            { "data": "password", className: "text-center" },
-            { "data": "level"},
+            { "data": "id_cabang", className: "text-center" },
+            { "data": "nm_cabang"},
+            { "data": null,
+                render: function(data){
+                    return data.id_user+"</br>"+data.nm_kepala_toko
+                }
+            },
             { "data": null, 
               "render" : function(data){
                 return "<button class='btn btn-sm btn-warning' title='Edit Data' onclick='editData("+JSON.stringify(data)+");'>Edit </button> "+
-                  "<button class='btn btn-sm btn-danger' title='Hapus Data' onclick='deleteData(\""+data.id_user+"\");'>Hapus </button>"
+                  "<button class='btn btn-sm btn-danger' title='Hapus Data' onclick='deleteData(\""+data.id_cabang+"\");'>Hapus </button>"
               },
               className: "text-center"
             },
@@ -199,8 +213,8 @@
   function deleteData(id){
     if(!confirm('Delete this data?')) return
 
-    urlPost = "<?php echo site_url('user/deleteData') ?>";
-    formData = "id_user="+id
+    urlPost = "<?php echo site_url('cabang/deleteData') ?>";
+    formData = "id_cabang="+id
     ACTION(urlPost, formData)
   }
 </script>
