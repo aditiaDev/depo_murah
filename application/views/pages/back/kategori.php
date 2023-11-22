@@ -1,6 +1,5 @@
 <link href="<?php echo base_url(); ?>assets/datatable/datatables.min.css" rel="stylesheet">
 <link href="<?php echo base_url(); ?>assets/toastr/toastr.min.css" rel="stylesheet">
-<link href="<?php echo base_url(); ?>assets/select2/css/select2.min.css" rel="stylesheet">
 <a href="javascript:;" id="add_data" class="float" data-toggle="tooltip" data-placement="left" title="Tambah Data">
   <i class="fa fa-plus my-float"></i>
 </a>
@@ -11,7 +10,7 @@
       <div class="col-md-12 col-sm-12  ">
         <div class="x_panel">
           <div class="x_title">
-            <h2>Data Cabang</h2>
+            <h2>Data Kategori</h2>
             <ul class="nav navbar-right panel_toolbox">
               <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
               </li>
@@ -26,9 +25,9 @@
                 <table class="table table-bordered table-hover table-striped" id="tb_data">
                   <thead>
                     <th class="text-center">No</th>
-                    <th class="text-center">ID Cabang</th>
-                    <th class="text-center">Nama Cabang</th>
-                    <th class="text-center">Kepala Cabang</th>
+                    <th class="text-center">ID Kategori</th>
+                    <th class="text-center">Nama Kategori</th>
+                    <th class="text-center">Kode Kategori</th>
                     <th class="text-center" style="width:110px">Aksi</th>
                   </thead>
                   <tbody></tbody>
@@ -54,16 +53,12 @@
       <div class="modal-body">
         <form id="FRM_DATA">
           <div class="form-group">
-            <label>Nama Cabang</label>
-            <input type="text" class="form-control" name="nm_cabang">
+            <label>Nama Kategori</label>
+            <input type="text" class="form-control" name="nm_kategori">
           </div>
           <div class="form-group">
-            <label>Kepala cabang</label>
-            <select name="id_user" class="form-control select2" style="width:100%"></select>
-          </div>
-          <div class="form-group">
-            <label>Nama Kepala cabang</label>
-            <input type="text" class="form-control" name="nm_kepala_toko">
+            <label>Kode Kategori</label>
+            <input type="text" class="form-control" name="kode_kategori">
           </div>
 
         </form>
@@ -78,7 +73,6 @@
 </div>
 <script src="<?php echo base_url(); ?>assets/template/back/jquery/dist/jquery.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/toastr/toastr.min.js"></script>
-<script src="<?php echo base_url(); ?>assets/select2/js/select2.min.js"></script>
 <script>
 
   var save_method;
@@ -89,33 +83,8 @@
     REFRESH_DATA()
   })
 
-  select_id_user = $("[name='id_user']").select2({
-    placeholder: "Pilih",
-  })
-  
-  ISI_SELECT()
-  function ISI_SELECT(){
-    $.ajax({
-      url: "<?php echo site_url('cabang/getUserKepala') ?>",
-      type: "POST",
-      dataType: "JSON",
-      success: function(data){
-        let row='<option value="" disabled selected>Pilih</option>'
-        $.map(data.data, function (item) {
-          row += "<option value='"+item.id_user+"' dtl='"+item.nm_pengguna+"'>"+item.id_user+" - "+item.nm_pengguna+"</option>"
-        })
-        $("[name='id_user']").html(row)
-      }
-    })
-  }
-
-  $("[name='id_user']").change(function(){
-    let nm_kepala = $("[name='id_user'] option:selected").attr('dtl')
-    $("[name='nm_kepala_toko']").val(nm_kepala)
-  })
 
   $("#add_data").click(function(){
-    select_id_user.val('').trigger('change')
     $("#FRM_DATA")[0].reset()
     save_method = "save"
     $("#modal_add .modal-title").text('Tambah Data')
@@ -126,10 +95,10 @@
     event.preventDefault();
     var formData = $("#FRM_DATA").serialize();
     if(save_method == 'save') {
-        urlPost = "<?php echo site_url('cabang/saveData') ?>";
+        urlPost = "<?php echo site_url('kategori/saveData') ?>";
     }else{
-        urlPost = "<?php echo site_url('cabang/updateData') ?>";
-        formData+="&id_cabang="+id_data
+        urlPost = "<?php echo site_url('kategori/updateData') ?>";
+        formData+="&id_kategori_barang="+id_data
     }
 
     ACTION(urlPost, formData)
@@ -169,7 +138,7 @@
         "autoWidth": false,
         "responsive": true,
         "ajax": {
-            "url": "<?php echo site_url('cabang/getAllData') ?>",
+            "url": "<?php echo site_url('kategori/getAllData') ?>",
             "type": "POST",
         },
         "columns": [
@@ -180,17 +149,12 @@
                 }
                 , className: "text-center"
             },
-            { "data": "id_cabang", className: "text-center" },
-            { "data": "nm_cabang"},
-            { "data": null,
-                render: function(data){
-                    return data.id_user+"</br>"+data.nm_kepala_toko
-                }
-            },
+            { "data": "id_kategori_barang", className: "text-center" },
+            { "data": "nm_kategori"},{ "data": "kode_kategori"},
             { "data": null, 
               "render" : function(data){
                 return "<button class='btn btn-sm btn-warning' title='Edit Data' onclick='editData("+JSON.stringify(data)+");'>Edit </button> "+
-                  "<button class='btn btn-sm btn-danger' title='Hapus Data' onclick='deleteData(\""+data.id_cabang+"\");'>Hapus </button>"
+                  "<button class='btn btn-sm btn-danger' title='Hapus Data' onclick='deleteData(\""+data.id_kategori_barang+"\");'>Hapus </button>"
               },
               className: "text-center"
             },
@@ -203,11 +167,10 @@
   function editData(data){
     // console.log(data)
     save_method = "edit"
-    id_data = data.id_cabang;
+    id_data = data.id_kategori_barang;
     $("#modal_add .modal-title").text('Edit Data')
-    $("[name='nm_cabang']").val(data.nm_cabang)
-    select_id_user.val(data.id_user).trigger('change')
-    $("[name='nm_kepala_toko']").val(data.nm_kepala_toko)
+    $("[name='nm_kategori']").val(data.nm_kategori)
+    $("[name='kode_kategori']").val(data.kode_kategori)
 
     $("#modal_add").modal('show')
   }
@@ -215,8 +178,8 @@
   function deleteData(id){
     if(!confirm('Delete this data?')) return
 
-    urlPost = "<?php echo site_url('cabang/deleteData') ?>";
-    formData = "id_cabang="+id
+    urlPost = "<?php echo site_url('kategori/deleteData') ?>";
+    formData = "id_kategori_barang="+id
     ACTION(urlPost, formData)
   }
 </script>

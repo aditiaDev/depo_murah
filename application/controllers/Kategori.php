@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Cabang extends CI_Controller {
+class Kategori extends CI_Controller {
 
     public function __construct(){
         parent::__construct();
@@ -14,26 +14,21 @@ class Cabang extends CI_Controller {
     $this->load->view('template/back/header');
     $this->load->view('template/back/sidebar');
     $this->load->view('template/back/topnav');
-    $this->load->view('pages/back/cabang');
+    $this->load->view('pages/back/kategori');
     $this->load->view('template/back/footer');
 	}
 
   public function getAllData(){
-    $data['data'] = $this->db->query("SELECT * FROM tb_cabang")->result();
-    echo json_encode($data);
-  }
-
-  public function getUserKepala(){
-    $data['data'] = $this->db->query("SELECT id_user, nm_pengguna FROM tb_user WHERE LEVEL = 'KEPALA TOKO'")->result();
+    $data['data'] = $this->db->query("SELECT * FROM tb_kategori_barang")->result();
     echo json_encode($data);
   }
 
   public function generateId(){
-    $unik = 'CB';
-    $kode = $this->db->query("SELECT MAX(id_cabang) LAST_NO FROM tb_cabang WHERE id_cabang LIKE '".$unik."%'")->row()->LAST_NO;
+    $unik = 'K';
+    $kode = $this->db->query("SELECT MAX(id_kategori_barang) LAST_NO FROM tb_kategori_barang WHERE id_kategori_barang LIKE '".$unik."%'")->row()->LAST_NO;
     // mengambil angka dari kode barang terbesar, menggunakan fungsi substr
     // dan diubah ke integer dengan (int)
-    $urutan = (int) substr($kode, 2, 3);
+    $urutan = (int) substr($kode, 1, 4);
     
     // bilangan yang diambil ini ditambah 1 untuk menentukan nomor urut berikutnya
     $urutan++;
@@ -43,16 +38,15 @@ class Cabang extends CI_Controller {
     // misalnya perintah sprintf("%03s", 15); maka akan menghasilkan '015'
     // angka yang diambil tadi digabungkan dengan kode huruf yang kita inginkan, misalnya BRG 
     $huruf = $unik;
-    $kode = $huruf . sprintf("%03s", $urutan);
+    $kode = $huruf . sprintf("%04s", $urutan);
     return $kode;
   }
 
   public function saveData(){
     
     $this->load->library('form_validation');
-    $this->form_validation->set_rules('id_user', 'id_user', 'required');
-    $this->form_validation->set_rules('nm_cabang', 'nm_cabang', 'required');
-    $this->form_validation->set_rules('nm_kepala_toko', 'Nama Kepala Cabang', 'required');
+    $this->form_validation->set_rules('nm_kategori', 'Nama kategori', 'required');
+    $this->form_validation->set_rules('kode_kategori', 'kode kategori', 'required');
 
     if($this->form_validation->run() == FALSE){
       // echo validation_errors();
@@ -64,12 +58,11 @@ class Cabang extends CI_Controller {
     $id = $this->generateId();
     
     $data = array(
-              "id_cabang " => $id,
-              "nm_cabang" => $this->input->post('nm_cabang'),
-              "id_user" => $this->input->post('id_user'),
-              "nm_kepala_toko" => $this->input->post('nm_kepala_toko'),
+              "id_kategori_barang " => $id,
+              "nm_kategori" => $this->input->post('nm_kategori'),
+              "kode_kategori" => $this->input->post('kode_kategori'),
             );
-    $this->db->insert('tb_cabang', $data);
+    $this->db->insert('tb_kategori_barang', $data);
     $output = array("status" => "success", "message" => "Data Berhasil Disimpan");
     echo json_encode($output);
 
@@ -78,10 +71,9 @@ class Cabang extends CI_Controller {
   public function updateData(){
 
     $this->load->library('form_validation');
-    $this->form_validation->set_rules('id_cabang', 'id Cabang', 'required');
-    $this->form_validation->set_rules('id_user', 'id_user', 'required');
-    $this->form_validation->set_rules('nm_cabang', 'nm_cabang', 'required');
-    $this->form_validation->set_rules('nm_kepala_toko', 'Nama Kepala Cabang', 'required');
+    $this->form_validation->set_rules('id_kategori_barang', 'id kategori barang', 'required');
+    $this->form_validation->set_rules('nm_kategori', 'Nama kategori', 'required');
+    $this->form_validation->set_rules('kode_kategori', 'kode kategori', 'required');
 
     if($this->form_validation->run() == FALSE){
       // echo validation_errors();
@@ -91,12 +83,11 @@ class Cabang extends CI_Controller {
     }
 
     $data = array(
-      "nm_cabang" => $this->input->post('nm_cabang'),
-      "id_user" => $this->input->post('id_user'),
-      "nm_kepala_toko" => $this->input->post('nm_kepala_toko'),
+        "nm_kategori" => $this->input->post('nm_kategori'),
+        "kode_kategori" => $this->input->post('kode_kategori'),
     );
-    $this->db->where('id_cabang', $this->input->post('id_cabang'));
-    $this->db->update('tb_cabang', $data);
+    $this->db->where('id_kategori_barang', $this->input->post('id_kategori_barang'));
+    $this->db->update('tb_kategori_barang', $data);
     if($this->db->error()['message'] != ""){
       $output = array("status" => "error", "message" => $this->db->error()['message']);
       echo json_encode($output);
@@ -107,8 +98,8 @@ class Cabang extends CI_Controller {
   }
 
   public function deleteData(){
-    $this->db->where('id_cabang', $this->input->post('id_cabang'));
-    $this->db->delete('tb_cabang');
+    $this->db->where('id_kategori_barang', $this->input->post('id_kategori_barang'));
+    $this->db->delete('tb_kategori_barang');
 
     $output = array("status" => "success", "message" => "Data Berhasil di Hapus");
     echo json_encode($output);

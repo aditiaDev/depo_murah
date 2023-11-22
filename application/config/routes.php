@@ -55,5 +55,6 @@ $route['translate_uri_dashes'] = FALSE;
 
 $route['master/user'] = 'user';
 $route['master/cabang'] = 'cabang';
+$route['master/kategori'] = 'kategori';
 
 // $route['dtlcomplaint/(:any)'] = 'complaint/dtlcomplaint/$1';
