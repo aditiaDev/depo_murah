@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 20 Nov 2023 pada 15.34
--- Versi server: 10.4.27-MariaDB
--- Versi PHP: 7.4.33
+-- Waktu pembuatan: 01 Jan 2024 pada 09.41
+-- Versi server: 10.4.32-MariaDB
+-- Versi PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -36,6 +36,13 @@ CREATE TABLE `tb_barang` (
   `deskripsi` varchar(255) DEFAULT NULL,
   `point_barang` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `tb_barang`
+--
+
+INSERT INTO `tb_barang` (`id_barang`, `id_kategori_barang`, `nm_barang`, `harga_barang`, `foto_barang`, `deskripsi`, `point_barang`) VALUES
+('BSI00001', 'K0002', 'Besi Ringan', 250000, '1704078966172.png', 'Besi Ringan Merk Bangunan,\r\nPanjan 10Meter', 25);
 
 -- --------------------------------------------------------
 
@@ -68,6 +75,21 @@ CREATE TABLE `tb_cabang` (
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `tb_dtl_penjualan`
+--
+
+CREATE TABLE `tb_dtl_penjualan` (
+  `id_dtl_penjualan` int(11) NOT NULL,
+  `id_penjualan` varchar(15) NOT NULL,
+  `id_barang` varchar(15) NOT NULL,
+  `jumlah` int(11) NOT NULL,
+  `harga_barang` int(11) NOT NULL,
+  `subtotal` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `tb_kategori_barang`
 --
 
@@ -76,6 +98,15 @@ CREATE TABLE `tb_kategori_barang` (
   `nm_kategori` varchar(40) DEFAULT NULL,
   `kode_kategori` varchar(3) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `tb_kategori_barang`
+--
+
+INSERT INTO `tb_kategori_barang` (`id_kategori_barang`, `nm_kategori`, `kode_kategori`) VALUES
+('K0001', 'Keramik', 'KRM'),
+('K0002', 'Besi', 'BSI'),
+('K0003', 'Semen', 'SMN');
 
 -- --------------------------------------------------------
 
@@ -87,7 +118,70 @@ CREATE TABLE `tb_pelanggan` (
   `id_pelanggan` varchar(15) NOT NULL,
   `nm_pelanggan` varchar(35) DEFAULT NULL,
   `alamat` varchar(300) DEFAULT NULL,
-  `no_pelanggan` varchar(13) DEFAULT NULL
+  `no_pelanggan` varchar(13) DEFAULT NULL,
+  `point_pelanggan` int(11) NOT NULL,
+  `tgl_register` date NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `tb_pelanggan`
+--
+
+INSERT INTO `tb_pelanggan` (`id_pelanggan`, `nm_pelanggan`, `alamat`, `no_pelanggan`, `point_pelanggan`, `tgl_register`) VALUES
+('P2400001', 'Pelanggan 1', 'Alamat', '08524465132', 0, '2024-01-01');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `tb_pembayaran`
+--
+
+CREATE TABLE `tb_pembayaran` (
+  `id_pembayaran` varchar(15) NOT NULL,
+  `id_penjualan` varchar(15) NOT NULL,
+  `tgl_bayar` date NOT NULL,
+  `nominal_bayar` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `tb_penjualan`
+--
+
+CREATE TABLE `tb_penjualan` (
+  `id_penjualan` varchar(15) NOT NULL,
+  `id_pelanggan` varchar(15) NOT NULL,
+  `id_cabang` varchar(10) NOT NULL,
+  `diskon` float NOT NULL,
+  `tot_harga_barang` int(11) NOT NULL,
+  `tot_penjualan` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `tb_sikap_pelanggan`
+--
+
+CREATE TABLE `tb_sikap_pelanggan` (
+  `id_sikap` varchar(15) NOT NULL,
+  `id_pelanggan` varchar(15) NOT NULL,
+  `id_penjualan` varchar(15) NOT NULL,
+  `nilai_sikap` enum('KURANG BAIK','CUKUP BAIK','BAIK','SANGAT BAIK') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `tb_stock_cabang`
+--
+
+CREATE TABLE `tb_stock_cabang` (
+  `id_stock` int(11) NOT NULL,
+  `id_cabang` varchar(10) NOT NULL,
+  `id_barang` varchar(15) NOT NULL,
+  `stock` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -139,6 +233,12 @@ ALTER TABLE `tb_cabang`
   ADD PRIMARY KEY (`id_cabang`);
 
 --
+-- Indeks untuk tabel `tb_dtl_penjualan`
+--
+ALTER TABLE `tb_dtl_penjualan`
+  ADD PRIMARY KEY (`id_dtl_penjualan`);
+
+--
 -- Indeks untuk tabel `tb_kategori_barang`
 --
 ALTER TABLE `tb_kategori_barang`
@@ -151,10 +251,44 @@ ALTER TABLE `tb_pelanggan`
   ADD PRIMARY KEY (`id_pelanggan`);
 
 --
+-- Indeks untuk tabel `tb_pembayaran`
+--
+ALTER TABLE `tb_pembayaran`
+  ADD PRIMARY KEY (`id_pembayaran`);
+
+--
+-- Indeks untuk tabel `tb_sikap_pelanggan`
+--
+ALTER TABLE `tb_sikap_pelanggan`
+  ADD PRIMARY KEY (`id_sikap`);
+
+--
+-- Indeks untuk tabel `tb_stock_cabang`
+--
+ALTER TABLE `tb_stock_cabang`
+  ADD PRIMARY KEY (`id_stock`);
+
+--
 -- Indeks untuk tabel `tb_user`
 --
 ALTER TABLE `tb_user`
   ADD PRIMARY KEY (`id_user`);
+
+--
+-- AUTO_INCREMENT untuk tabel yang dibuang
+--
+
+--
+-- AUTO_INCREMENT untuk tabel `tb_dtl_penjualan`
+--
+ALTER TABLE `tb_dtl_penjualan`
+  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT untuk tabel `tb_stock_cabang`
+--
+ALTER TABLE `tb_stock_cabang`
+  MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -30,7 +30,7 @@
                       <th>ID Barang</th>
                       <th>Nama Barang</th>
                       <th>Harga</th>
-                      <th>Stock</th>
+                      <th>Point Barang</th>
                       <th width="110px;">Action</th>
                   </thead>
                   <tbody></tbody>
@@ -47,60 +47,76 @@
 <div class="modal fade bs-example-modal-lg" id="modal_add" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-
-      <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form id="FRM_DATA">
+      <form id="FRM_DATA">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
           
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="form-group">
-                <label>Kategori</label>
-                <select name="id_kategori" id="" class="form-control">
-                  <option value="" disabled selected> - Pilih - </option>
-                  <?php
-                    foreach($kategori as $kat){
-                      echo "<option value='".$kat->id_kategori_barang."'>".$kat->nm_kategori."</option>";
-                    }
-                  ?>
-                </select>
+            
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Kategori</label>
+                  <select name="id_kategori_barang" id="" class="form-control">
+                    <option value="" disabled selected> - Pilih - </option>
+                    <?php
+                      foreach($kategori as $kat){
+                        echo "<option value='".$kat->id_kategori_barang."'>".$kat->nm_kategori."</option>";
+                      }
+                    ?>
+                  </select>
+                </div>
               </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="form-group">
-                <label>Nama Barang</label>
-                <input type="text" class="form-control" name="nm_barang" >
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-6">
-              <div class="form-group">
-                <label>Harga</label>
-                <input name="harga"  class="form-control" onkeypress="return onlyNumberKey(event)" required>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="form-group">
-                <label id="lbl_foto">Foto Produk</label>
-                <div class="custom-file">
-                  <input type="file" class="form-control" name="foto" accept="image/png, image/gif, image/jpeg">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Nama Barang</label>
+                  <input type="text" class="form-control" name="nm_barang" >
                 </div>
               </div>
             </div>
-          </div>
-          
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" id="BTN_SAVE" class="btn btn-primary">Save changes</button>
-      </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Harga</label>
+                  <input name="harga_barang"  class="form-control" onkeypress="return onlyNumberKey(event)" required>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label id="lbl_foto">Foto Produk</label>
+                  <div class="custom-file">
+                    <input type="file" class="form-control" name="foto_barang" accept="image/png, image/gif, image/jpeg">
+                  </div>
+                </div>
+              </div>
+            </div>
 
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Point Barang</label>
+                  <input name="point_barang"  class="form-control" onkeypress="return onlyNumberKey(event)" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Deskripsi</label>
+                  <textarea name="deskripsi" rows="5" class="form-control"></textarea>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" id="BTN_SAVE" class="btn btn-primary">Save changes</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -137,8 +153,12 @@
             { "data": "nm_kategori" },
             { "data": "id_barang" },
             { "data": "nm_barang"},
-            { "data": "harga_barang"},
-            { "data": "stock"},
+            { "data": "harga_barang",
+              "render": function(data){
+                return formatRupiah(data.toString(), "")
+              }
+            },
+            { "data": "point_barang"},
             { "data": null, 
               "render" : function(data){
                 return "<button class='btn btn-sm btn-warning' title='Edit Data' onclick='editData("+JSON.stringify(data)+");'><i class='fa fa-pencil-square-o'></i> </button> "+
@@ -193,4 +213,94 @@
     $("#modal_add .modal-title").text('Tambah Data')
     $("#modal_add").modal('show')
   })
+
+  $("#FRM_DATA").on('submit', function(event){
+    event.preventDefault();
+    let formData = new FormData(this);
+
+    
+    if(save_method == 'save') {
+        urlPost = "<?php echo site_url('barang/saveData') ?>";
+    }else{
+        urlPost = "<?php echo site_url('barang/updateData/') ?>"+id_data;
+    }
+    // console.log(formData)
+    ACTION(urlPost, formData)
+    // $("#modal_add").modal('hide')
+  })
+
+  function editData(data, index){
+    console.log(data)
+    save_method = "edit"
+    id_data = data.id_barang;
+    $("[name='foto_barang']").val('')
+    $("#lbl_foto").text("Ganti Foto")
+    $("#modal_add .modal-title").text('Edit Data')
+    $("[name='id_barang']").val(data.id_barang)
+    $("[name='nm_barang']").val(data.nm_barang)
+    $("[name='harga_barang']").val(data.harga_barang.replaceAll(".",""))
+    $("[name='id_kategori_barang']").val(data.id_kategori_barang)
+    $("[name='deskripsi']").val(data.deskripsi)
+    $("[name='point_barang']").val(data.point_barang)
+
+    $("#modal_add").modal('show')
+  }
+  
+  function ACTION(urlPost, formData){
+    $.ajax({
+      url: urlPost,
+      type: "POST",
+      data: formData,
+      beforeSend: function(){
+        $("#LOADER").show();
+      },
+      complete: function(){
+        $("#LOADER").hide();
+      },
+      processData : false,
+      cache: false,
+      contentType : false,
+      success: function(data){
+        data = JSON.parse(data)
+        console.log(data)
+        if (data.status == "success") {
+          toastr.info(data.message)
+          REFRESH_DATA()
+          $("#modal_add").modal('hide')
+
+        }else{
+          toastr.error(data.message)
+        }
+      },
+      error: function (err) {
+        console.log(err);
+      }
+    })
+  }
+
+  function deleteData(id){
+    if(!confirm('Delete this data?')) return
+
+    urlPost = "<?php echo site_url('barang/deleteData') ?>";
+    formData = "id_barang="+id
+    
+    $.ajax({
+        url: urlPost,
+        type: "POST",
+        data: formData,
+        dataType: "JSON",
+        success: function(data){
+          // console.log(data)
+          if (data.status == "success") {
+            toastr.info(data.message)
+            
+
+            REFRESH_DATA()
+
+          }else{
+            toastr.error(data.message)
+          }
+        }
+    })
+  }
 </script>

@@ -59,4 +59,5 @@ $route['master/kategori'] = 'kategori';
 $route['master/barang'] = 'barang';
 $route['master/pelanggan'] = 'pelanggan';
 
-// $route['dtlcomplaint/(:any)'] = 'complaint/dtlcomplaint/$1';
+$route['transaksi/penjualan'] = 'penjualan';
+$route['transaksi/datapenjualan'] = 'penjualan/datapenjualan';

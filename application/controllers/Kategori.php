@@ -46,7 +46,7 @@ class Kategori extends CI_Controller {
     
     $this->load->library('form_validation');
     $this->form_validation->set_rules('nm_kategori', 'Nama kategori', 'required');
-    $this->form_validation->set_rules('kode_kategori', 'kode kategori', 'required');
+    $this->form_validation->set_rules('kode_kategori', 'kode kategori', 'required|is_unique[tb_kategori_barang.kode_kategori]');
 
     if($this->form_validation->run() == FALSE){
       // echo validation_errors();
