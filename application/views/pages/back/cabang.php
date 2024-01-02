@@ -28,7 +28,7 @@
                     <th class="text-center">No</th>
                     <th class="text-center">ID Cabang</th>
                     <th class="text-center">Nama Cabang</th>
-                    <th class="text-center">Kepala Cabang</th>
+                    <th class="text-center">Alamat</th>
                     <th class="text-center" style="width:110px">Aksi</th>
                   </thead>
                   <tbody></tbody>
@@ -57,13 +57,17 @@
             <label>Nama Cabang</label>
             <input type="text" class="form-control" name="nm_cabang">
           </div>
-          <div class="form-group">
+          <!-- <div class="form-group">
             <label>Kepala cabang</label>
             <select name="id_user" class="form-control select2" style="width:100%"></select>
           </div>
           <div class="form-group">
             <label>Nama Kepala cabang</label>
             <input type="text" class="form-control" name="nm_kepala_toko">
+          </div> -->
+          <div class="form-group">
+            <label>Alamat cabang</label>
+            <textarea class="form-control" name="alamat_cabang"></textarea>
           </div>
 
         </form>
@@ -93,7 +97,7 @@
     placeholder: "Pilih",
   })
   
-  ISI_SELECT()
+  // ISI_SELECT()
   function ISI_SELECT(){
     $.ajax({
       url: "<?php echo site_url('cabang/getUserKepala') ?>",
@@ -182,11 +186,12 @@
             },
             { "data": "id_cabang", className: "text-center" },
             { "data": "nm_cabang"},
-            { "data": null,
-                render: function(data){
-                    return data.id_user+"</br>"+data.nm_kepala_toko
-                }
-            },
+            { "data": "alamat_cabang"},
+            // { "data": null,
+            //     render: function(data){
+            //         return data.id_user+"</br>"+data.nm_kepala_toko
+            //     }
+            // },
             { "data": null, 
               "render" : function(data){
                 return "<button class='btn btn-sm btn-warning' title='Edit Data' onclick='editData("+JSON.stringify(data)+");'>Edit </button> "+
@@ -206,8 +211,9 @@
     id_data = data.id_cabang;
     $("#modal_add .modal-title").text('Edit Data')
     $("[name='nm_cabang']").val(data.nm_cabang)
-    select_id_user.val(data.id_user).trigger('change')
-    $("[name='nm_kepala_toko']").val(data.nm_kepala_toko)
+    $("[name='alamat_cabang']").val(data.alamat_cabang)
+    // select_id_user.val(data.id_user).trigger('change')
+    // $("[name='nm_kepala_toko']").val(data.nm_kepala_toko)
 
     $("#modal_add").modal('show')
   }

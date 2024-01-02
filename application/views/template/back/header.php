@@ -19,6 +19,7 @@
 
     <!-- Custom Theme Style -->
     <link href="<?php echo base_url(); ?>assets/template/back/build/css/custom.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?php echo base_url('/assets/css/loader.css'); ?>">
     <style>
       .float{
         position:fixed;
@@ -80,6 +81,9 @@
   </head>
 
   <body class="nav-md">
+    <div class="before-loader" id="LOADER" style="display: none;">
+      <div class="loader5" ></div>
+    </div>
     <div id="overlay">
       <div class="cv-spinner">
         <span class="spinner"></span>

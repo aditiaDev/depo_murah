@@ -189,5 +189,27 @@ class Barang extends CI_Controller {
     echo json_encode($data);
   }
 
+  public function getByName(){
+    $search = $this->input->post('search');
+    $query = "SELECT * FROM tb_barang WHERE nm_barang LIKE '%".$search."%' ORDER BY nm_barang";
+
+    $html="";
+    $sql = $this->db->query($query)->result_array();
+    foreach($sql as $row){
+      $html .= '
+      <li>
+        <a href="javascript:;" data-rel="colorbox" onclick="addItem(\''.$row['id_barang'].'\')">
+          <img width="100" height="100" alt="100x100" src="'.base_url().'assets/images/barang/'.$row['foto_barang'].'" />
+          <div class="text">
+            <div class="inner">'.$row['nm_barang'].'</div>
+          </div>
+        </a>
+      </li>
+      ';
+    }
+
+    echo $html;
+  }
+
 }
 ?>

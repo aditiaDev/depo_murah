@@ -50,9 +50,10 @@ class Cabang extends CI_Controller {
   public function saveData(){
     
     $this->load->library('form_validation');
-    $this->form_validation->set_rules('id_user', 'id_user', 'required');
-    $this->form_validation->set_rules('nm_cabang', 'nm_cabang', 'required');
-    $this->form_validation->set_rules('nm_kepala_toko', 'Nama Kepala Cabang', 'required');
+    // $this->form_validation->set_rules('id_user', 'id_user', 'required');
+    $this->form_validation->set_rules('nm_cabang', 'Nama cabang', 'required');
+    $this->form_validation->set_rules('alamat_cabang', 'Alamat cabang', 'required');
+    // $this->form_validation->set_rules('nm_kepala_toko', 'Nama Kepala Cabang', 'required');
 
     if($this->form_validation->run() == FALSE){
       // echo validation_errors();
@@ -66,8 +67,9 @@ class Cabang extends CI_Controller {
     $data = array(
               "id_cabang " => $id,
               "nm_cabang" => $this->input->post('nm_cabang'),
-              "id_user" => $this->input->post('id_user'),
-              "nm_kepala_toko" => $this->input->post('nm_kepala_toko'),
+              "alamat_cabang" => $this->input->post('alamat_cabang'),
+              // "id_user" => $this->input->post('id_user'),
+              // "nm_kepala_toko" => $this->input->post('nm_kepala_toko'),
             );
     $this->db->insert('tb_cabang', $data);
     $output = array("status" => "success", "message" => "Data Berhasil Disimpan");
@@ -79,9 +81,11 @@ class Cabang extends CI_Controller {
 
     $this->load->library('form_validation');
     $this->form_validation->set_rules('id_cabang', 'id Cabang', 'required');
-    $this->form_validation->set_rules('id_user', 'id_user', 'required');
     $this->form_validation->set_rules('nm_cabang', 'nm_cabang', 'required');
-    $this->form_validation->set_rules('nm_kepala_toko', 'Nama Kepala Cabang', 'required');
+    $this->form_validation->set_rules('alamat_cabang', 'alamat_cabang', 'required');
+    // $this->form_validation->set_rules('id_user', 'id_user', 'required');
+    
+    // $this->form_validation->set_rules('nm_kepala_toko', 'Nama Kepala Cabang', 'required');
 
     if($this->form_validation->run() == FALSE){
       // echo validation_errors();
@@ -92,8 +96,9 @@ class Cabang extends CI_Controller {
 
     $data = array(
       "nm_cabang" => $this->input->post('nm_cabang'),
-      "id_user" => $this->input->post('id_user'),
-      "nm_kepala_toko" => $this->input->post('nm_kepala_toko'),
+      "alamat_cabang" => $this->input->post('alamat_cabang'),
+      // "id_user" => $this->input->post('id_user'),
+      // "nm_kepala_toko" => $this->input->post('nm_kepala_toko'),
     );
     $this->db->where('id_cabang', $this->input->post('id_cabang'));
     $this->db->update('tb_cabang', $data);

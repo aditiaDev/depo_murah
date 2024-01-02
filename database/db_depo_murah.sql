@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 02 Jan 2024 pada 09.44
--- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.0.30
+-- Waktu pembuatan: 02 Jan 2024 pada 16.26
+-- Versi server: 10.4.27-MariaDB
+-- Versi PHP: 7.4.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -70,10 +70,17 @@ CREATE TABLE `tb_barang_masuk` (
 
 CREATE TABLE `tb_cabang` (
   `id_cabang` varchar(10) NOT NULL,
-  `id_user` varchar(25) DEFAULT NULL,
   `nm_cabang` varchar(35) DEFAULT NULL,
-  `nm_kepala_toko` varchar(40) DEFAULT NULL
+  `alamat_cabang` varchar(150) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `tb_cabang`
+--
+
+INSERT INTO `tb_cabang` (`id_cabang`, `nm_cabang`, `alamat_cabang`) VALUES
+('CB001', 'Cabang 1', 'Jati Kudus'),
+('CB002', 'Cabang 2', 'Kudus Kota');
 
 -- --------------------------------------------------------
 
@@ -131,7 +138,7 @@ CREATE TABLE `tb_pelanggan` (
 --
 
 INSERT INTO `tb_pelanggan` (`id_pelanggan`, `nm_pelanggan`, `alamat`, `no_pelanggan`, `point_pelanggan`, `tgl_register`) VALUES
-('P2400001', 'Pelanggan 1', 'Alamat', '08524465132', 10000, '2024-01-01');
+('P2400001', 'Pelanggan 1', 'Alamat', '08524465132', 100, '2024-01-01');
 
 -- --------------------------------------------------------
 
@@ -154,11 +161,13 @@ CREATE TABLE `tb_pembayaran` (
 
 CREATE TABLE `tb_penjualan` (
   `id_penjualan` varchar(15) NOT NULL,
+  `tgl_penjualan` datetime NOT NULL,
   `id_pelanggan` varchar(15) NOT NULL,
   `id_cabang` varchar(10) NOT NULL,
   `diskon` float NOT NULL,
   `tot_harga_barang` int(11) NOT NULL,
-  `tot_penjualan` int(11) NOT NULL
+  `tot_akhir` int(11) NOT NULL,
+  `created_by` varchar(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -187,6 +196,13 @@ CREATE TABLE `tb_stock_cabang` (
   `stock` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `tb_stock_cabang`
+--
+
+INSERT INTO `tb_stock_cabang` (`id_stock`, `id_cabang`, `id_barang`, `stock`) VALUES
+(1, 'CB001', 'BSI00002', 100);
+
 -- --------------------------------------------------------
 
 --
@@ -198,20 +214,20 @@ CREATE TABLE `tb_user` (
   `username` varchar(25) DEFAULT NULL,
   `password` varchar(30) DEFAULT NULL,
   `nm_pengguna` varchar(45) DEFAULT NULL,
-  `level` enum('PEMILIK','KEPALA TOKO','KASIR','ADMIN GUDANG') DEFAULT NULL
+  `level` enum('PEMILIK','KEPALA TOKO','KASIR','ADMIN GUDANG') DEFAULT NULL,
+  `id_cabang` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `tb_user`
 --
 
-INSERT INTO `tb_user` (`id_user`, `username`, `password`, `nm_pengguna`, `level`) VALUES
-('U2300001', 'admin', '12345678', 'Admin Gudang', 'ADMIN GUDANG'),
-('U2300002', 'sdfdsf', '34234234', 'sfds', 'KASIR'),
-('U2300003', 'sdfsdfdsfd', '12312345', 'sdfsdfsdf', 'KASIR'),
-('U2300004', 'dfgd', 'ertretet', 'dfg', 'KASIR'),
-('U2300005', 'asdsadsad', 'er234324234', 'asdsad', 'KEPALA TOKO'),
-('U2300006', 'pemilik', '12345678', 'Pemilik', 'PEMILIK');
+INSERT INTO `tb_user` (`id_user`, `username`, `password`, `nm_pengguna`, `level`, `id_cabang`) VALUES
+('U2300001', 'admin', 'admin', 'Admin Gudang', 'ADMIN GUDANG', 'CB001'),
+('U2300005', 'kepala1', 'kepala1', 'Rendi', 'KEPALA TOKO', 'CB001'),
+('U2400001', 'pemilik', 'pemilik', 'Pemilik Depo Murah', 'PEMILIK', NULL),
+('U2400002', 'kasir1', 'kasir1', 'Kasir 1', 'KASIR', 'CB001'),
+('U2400003', 'kasir2', 'kasir2', 'Kasir 2', 'KASIR', 'CB002');
 
 --
 -- Indexes for dumped tables
@@ -260,6 +276,12 @@ ALTER TABLE `tb_pembayaran`
   ADD PRIMARY KEY (`id_pembayaran`);
 
 --
+-- Indeks untuk tabel `tb_penjualan`
+--
+ALTER TABLE `tb_penjualan`
+  ADD PRIMARY KEY (`id_penjualan`);
+
+--
 -- Indeks untuk tabel `tb_sikap_pelanggan`
 --
 ALTER TABLE `tb_sikap_pelanggan`
@@ -285,13 +307,13 @@ ALTER TABLE `tb_user`
 -- AUTO_INCREMENT untuk tabel `tb_dtl_penjualan`
 --
 ALTER TABLE `tb_dtl_penjualan`
-  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_stock_cabang`
 --
 ALTER TABLE `tb_stock_cabang`
-  MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

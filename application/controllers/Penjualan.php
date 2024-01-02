@@ -29,5 +29,140 @@ class Penjualan extends CI_Controller {
     $this->load->view('pages/back/datapenjualan');
     $this->load->view('template/back/footer');
   }
+
+  public function generateId(){
+    $unik = 'J'.date('y');
+    $kode = $this->db->query("SELECT MAX(id_penjualan) LAST_NO FROM tb_penjualan WHERE id_penjualan LIKE '".$unik."%'")->row()->LAST_NO;
+    // mengambil angka dari kode barang terbesar, menggunakan fungsi substr
+    // dan diubah ke integer dengan (int)
+    $urutan = (int) substr($kode, 3, 5);
+    
+    // bilangan yang diambil ini ditambah 1 untuk menentukan nomor urut berikutnya
+    $urutan++;
+    
+    $huruf = $unik;
+    $kode = $huruf . sprintf("%05s", $urutan);
+    return $kode;
+  }
+
+  public function generateIdBarangKeluar(){
+    $unik = 'K'.date('y');
+    $kode = $this->db->query("SELECT MAX(id_barang_keluar) LAST_NO FROM tb_barang_keluar WHERE id_barang_keluar LIKE '".$unik."%'")->row()->LAST_NO;
+
+    $urutan = (int) substr($kode, 3, 5);
+    $urutan++;
+    
+    $huruf = $unik;
+    $kode = $huruf . sprintf("%05s", $urutan);
+    return $kode;
+  }
+
+  public function saveCheckout(){
+    $this->load->library('form_validation');
+
+    $this->form_validation->set_rules('id_pelanggan', 'Pelanggan', 'required');
+    $this->form_validation->set_rules('id_barang[]', 'Barang', 'required');
+
+    
+    if($this->form_validation->run() == FALSE){
+      // echo validation_errors();
+      $output = array("status" => "error", "message" => validation_errors());
+      echo json_encode($output);
+      return false;
+    }
+
+    $id_cabang = $this->db->query("
+      SELECT id_cabang FROM tb_user WHERE id_user = '".$this->session->userdata('id_user')."'
+    ")->row()->id_cabang;
+
+    foreach($this->input->post('id_barang') as $key => $each){
+      $stock = $this->db->query(
+        "SELECT IFNULL(sum(stock), 0) stock FROM tb_stock_cabang WHERE id_barang = '".$this->input->post('id_barang')[$key]."' 
+        AND id_cabang = '".$id_cabang."'" 
+      )->row()->stock;
+
+      if($stock < $this->input->post('qty')[$key]){
+        $output = array("status" => "error", "message" => "Stock untuk ".$this->input->post('id_barang')[$key]." hanya ".$stock);
+        echo json_encode($output);
+        return false;
+      }
+    }
+
+    $id = $this->generateId();
+    
+    $data = array(
+              "id_penjualan" => $id,
+              "tgl_penjualan" => date('Y-m-d H:i:s'),
+              "id_pelanggan" => $this->input->post('id_pelanggan'),
+              "id_cabang" => $id_cabang,
+              "diskon" => $this->input->post('jml_point'),
+              "tot_harga_barang" => $this->input->post('tot_harga_barang'),
+              "tot_akhir" => $this->input->post('tot_akhir'),
+              "created_by" => $this->session->userdata('id_user'),
+              // "status_penjualan" => "SELESAI"
+            );
+    $this->db->insert('tb_penjualan', $data);
+
+    if( $this->input->post('id_pelanggan') <> "GUEST" ){
+      $this->db->query("
+        UPDATE tb_pelanggan SET point_pelanggan	 = ( point_pelanggan	 - ".$this->input->post('jml_point')." )
+        WHERE id_pelanggan = '".$this->input->post('id_pelanggan')."'
+      ");
+
+      
+    }
+    
+
+    $subtotal = 0;
+    foreach($this->input->post('id_barang') as $key => $each){
+      $subtotal = ( $this->input->post('qty')[$key] * $this->input->post('harga')[$key] );
+
+
+      $dataDtl = array(
+        "id_penjualan" => $id,
+        "id_barang" => $this->input->post('id_barang')[$key],
+        "jumlah" => $this->input->post('qty')[$key],
+        "harga_barang" => $this->input->post('harga')[$key],
+        "subtotal" => $subtotal,
+      );
+
+      $this->db->insert('tb_dtl_penjualan', $dataDtl);
+
+      if( $this->input->post('id_pelanggan') <> "GUEST" ){
+        $point_barang = $this->db->query("
+              SELECT point_barang FROM tb_barang WHERE id_barang = '".$this->input->post('id_barang')[$key]."'
+        ")->row()->point_barang;
+
+        $this->db->query("
+          UPDATE tb_pelanggan SET point_pelanggan = ( point_pelanggan + ".$point_barang." )
+          WHERE id_pelanggan = '".$this->input->post('id_pelanggan')."'
+        ");
+      }
+
+      // $id_barang_keluar = $this->generateIdBarangKeluar();
+
+      // $dataDtl2 = array(
+      //   "id_barang_keluar" => $id_barang_keluar,
+      //   "doc_referensi" => $id,
+      //   "doc_tipe" => "PENJUALAN",
+      //   "tgl_barang_keluar" => date('Y-m-d H:i:s'),
+      //   "id_barang" => $this->input->post('id_barang')[$key],
+      //   "jumlah" => $this->input->post('qty')[$key],
+      //   "harga" => $this->input->post('harga')[$key],
+      // );
+
+      // $this->db->insert('tb_barang_keluar', $dataDtl2);
+
+      $this->db->query("
+        UPDATE tb_stock_cabang SET stock = ( stock - ".$this->input->post('qty')[$key]." ) 
+        WHERE id_barang = '".$this->input->post('id_barang')[$key]."' AND id_cabang = '".$id_cabang."'
+      ");
+      
+    }
+    
+    $output = array("status" => "success", "message" => "Data Berhasil Disimpan</br>No Penjualan ".$id, "id" => $id,);
+    echo json_encode($output);
+  }
+
 }
 ?>

@@ -11,15 +11,21 @@ class User extends CI_Controller {
     }
 
 	public function index(){
+    $this->db->order_by("nm_cabang", "asc");
+    $data['cabang'] = $this->db->get('tb_cabang')->result();
+
     $this->load->view('template/back/header');
     $this->load->view('template/back/sidebar');
     $this->load->view('template/back/topnav');
-    $this->load->view('pages/back/user');
+    $this->load->view('pages/back/user', $data);
     $this->load->view('template/back/footer');
 	}
 
   public function getAllData(){
-    $data['data'] = $this->db->query("SELECT * FROM tb_user ")->result();
+    $data['data'] = $this->db->query("
+    SELECT A.*, B.nm_cabang FROM tb_user A 
+    LEFT JOIN tb_cabang B ON A.id_cabang = B.id_cabang
+    ")->result();
     echo json_encode($data);
   }
 
@@ -66,6 +72,7 @@ class User extends CI_Controller {
               "username" => $this->input->post('username'),
               "password" => $this->input->post('password'),
               "level" => $this->input->post('level'),
+              "id_cabang" => $this->input->post('id_cabang'),
             );
     $this->db->insert('tb_user', $data);
     $output = array("status" => "success", "message" => "Data Berhasil Disimpan");
@@ -93,6 +100,7 @@ class User extends CI_Controller {
       "username" => $this->input->post('username'),
       "password" => $this->input->post('password'),
       "level" => $this->input->post('level'),
+      "id_cabang" => $this->input->post('id_cabang'),
     );
     $this->db->where('id_user', $this->input->post('id_user'));
     $this->db->update('tb_user', $data);

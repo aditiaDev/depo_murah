@@ -18,7 +18,7 @@
                   <div style="overflow-y: auto;height:400px;">
                     <table id="tb_item" class="table table-bordered table-hover">
                       <thead>
-                        <tr>
+                        <tr style="background-color: #e9ecef;">
                           <th style="width: 270px;">Item</th>
                           <th style="width:80px;">Qty</th>
                           <th>Harga</th>
@@ -52,7 +52,7 @@
                           <td><input type="number" name="jml_point" onchange="diskon_calculate()" readonly class="form-control" value="0"></td>
                         </tr>
                         <tr>
-                          <td  style="font-size: 18px;font-weight: bold;">Order Value</td>
+                          <td  style="font-size: 18px;font-weight: bold;">Total Akhir</td>
                           <td colspan="2" style="color:red;text-align:right;padding-right: 25px;font-weight: bold;font-family: fantasy;font-size: 25px;" id="order_text">0</td>
                         </tr>
                         <!-- <tr>
@@ -131,9 +131,9 @@
     <!-- <form id="form_item"> -->
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">Pilih Pelanggan</h4>
+          <h4 class="modal-title" id="myModalLabel">Pilih Pelanggan</h4>
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+          </button>
         </div>
         <div class="modal-body">
           <div class="row">
@@ -145,8 +145,6 @@
                       <th>Jumlah Point</th>
                   </thead>
                   <tbody>
-                      <tr>
-                      </tr>
                   </tbody>
               </table>
           </div>
@@ -197,6 +195,8 @@
 <script src="<?php echo base_url(); ?>assets/toastr/toastr.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/select2/js/select2.min.js"></script>
 <script>
+  var max_point_pelanggan
+  var table_find_pelanggan
   function actKategori(id_kategori_barang){
     $.ajax({
       url: "<?php echo site_url('barang/getByKategori') ?>",
@@ -232,6 +232,12 @@
       data: {
         id_barang
       },
+      beforeSend: function(){
+        $("#LOADER").fadeIn(300);
+      },
+      complete: function(){
+        $("#LOADER").fadeOut(500);
+      },
       // dataType: "JSON",
       success: function(data){
         // console.log(data)
@@ -260,12 +266,19 @@
 
   function subTotal(id){
     // console.log(id)
-    let qty = $("#qty_"+id).val().split('.').join('');
-    let harga = $("#harga_"+id).text().split('.').join('');
+    // let qty = $("#qty_"+id).val().split('.').join('');
+    // let harga = $("#harga_"+id).text().split('.').join('');
+    
+
+    // let subTotal = ( parseFloat(qty) * parseFloat(harga) ) 
+    // $("#subTotal_"+id).text(formatRupiah(subTotal.toString(), ''))
+
+    let qty = $("[name='qty[]']").eq(id).val().split('.').join('');
+    let harga = $(".harga").eq(id).text().split('.').join('');
     
 
     let subTotal = ( parseFloat(qty) * parseFloat(harga) ) 
-    $("#subTotal_"+id).text(formatRupiah(subTotal.toString(), ''))
+    $(".subTotal").eq(id).text(formatRupiah(subTotal.toString(), ''))
 
     total()
   }
@@ -284,7 +297,11 @@
   }
 
   $("#BTN_PELANGGAN").click(function(){
-    
+    if($("#tb_item tbody tr").length < 1){
+      alert("Pilih Barang yg akan di Jual")
+      return
+    }
+    $('#tb_select_pelanggan').DataTable().destroy();
     table_find_pelanggan = $('#tb_select_pelanggan').DataTable( {
           "order": [[ 1, "asc" ]],
           "pageLength": 25,
@@ -308,7 +325,7 @@
       let nm_pelanggan = Rowdata.nm_pelanggan;
       let point_pelanggan = Rowdata.point_pelanggan;
 
-      // max_point_pelanggan = Rowdata.point_pelanggan;
+      max_point_pelanggan = Rowdata.point_pelanggan;
 
       // if(jml_point >= min_point){
       //   $("[name='jml_point']").attr('readonly', false)
@@ -322,7 +339,7 @@
       $("#nm_pelanggan").text(nm_pelanggan);
       $("[name='jml_point']").val(point_pelanggan);
 
-      // diskon_calculate()
+      diskon_calculate()
 
       $('#tb_select_pelanggan').DataTable().destroy();
       
@@ -330,4 +347,113 @@
 
       
   });
+
+  function diskon_calculate(){
+    
+    let tot_barang = $("#total_text").text().split('.').join('');
+    let jml_point = $("[name='jml_point']").val()
+
+    if( jml_point > max_point_pelanggan ){
+      alert("Point yg anda input melebihi jumlah point pelanggan")
+      $("[name='jml_point']").val(max_point_pelanggan)
+      return
+    }
+
+    let order_value = parseFloat(tot_barang) - parseFloat(jml_point)
+    $("#order_text").text(formatRupiah(order_value.toString(), ''));
+  }
+
+  function deleteRow(id){
+    $("#row_"+id).remove();
+    total()
+  }
+
+  $("#btnSearch").click(function(){
+    $.ajax({
+      url: "<?php echo site_url('barang/getByName') ?>",
+      type: "POST",
+      data: {
+        search : $("[name='keywords']").val()
+      },
+      dataType: "HTML",
+      success: function(data){
+        // console.log(data)
+        $("#item_data").html(data)
+      }
+    })
+  })
+
+  $("[name='bayar']").change(function(){
+    $(this).val(formatRupiah($(this).val().toString(), ''))
+
+    let bayar = $(this).val().split('.').join('');
+
+    let order_val = $("#order_text").text().split('.').join('');
+
+    if(parseFloat(bayar) < parseFloat(order_val)){
+      alert("Uang kurang")
+      $(this).val("")
+      return
+    }
+
+    let kembali = parseFloat(bayar) - parseFloat(order_val)
+    $("#kembali_text").text(formatRupiah(kembali.toString(), ''));
+  })
+
+  $("#btnPay").click(function(){
+    event.preventDefault()
+
+    if($("[name='qty[]']").length == 0){
+      alert("Belum ada Item di keranjang")
+      return
+    }
+
+    if( $("#tipe_bayar").val() == "TUNAI" && $("[name='bayar']").val() == ""){
+      alert("Input Uang Pembayaran")
+      return
+    }
+
+    let tot_harga_barang = $("#total_text").text().split('.').join('');
+    let tot_akhir = $("#order_text").text().split('.').join('');
+    let frmData = $("#FRM_DATA").serialize()
+    frmData+="&tot_harga_barang="+tot_harga_barang+"&tot_akhir="+tot_akhir
+
+    $.ajax({
+      url: "<?php echo site_url('penjualan/saveCheckout') ?>",
+      type: "POST",
+      dataType: "JSON",
+      data: frmData,
+      beforeSend: function () {
+        $("#LOADER").fadeIn(300);
+      },
+      complete: function () {
+        $("#LOADER").fadeOut(500);
+      },
+      success: function(data){
+        // console.log(data)
+        if (data.status == "success") {
+          toastr.info(data.message)
+          afterSave()
+          $("[name='no_nota']").val(data.id)
+          
+
+          
+          // setTimeout(() => {
+          //   cetak(data.id)
+          // }, 1000);
+          
+        }else{
+          toastr.error(data.message)
+        }
+      }
+    })
+  })
+
+  function afterSave(){
+    $("[name='qty[]']").attr('disabled',true)
+    $("#BTN_PELANGGAN").attr('disabled',true)
+    $("[name='jml_point']").attr('disabled',true)
+    $("[name='bayar']").attr('disabled',true)
+    $("#btnPay").attr('disabled',true)
+  }
 </script>

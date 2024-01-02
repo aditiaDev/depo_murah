@@ -30,6 +30,7 @@
                     <th class="text-center">Username</th>
                     <th class="text-center">Password</th>
                     <th class="text-center">Level</th>
+                    <th class="text-center">Cabang</th>
                     <th class="text-center" style="width:110px">Aksi</th>
                   </thead>
                   <tbody></tbody>
@@ -76,7 +77,17 @@
               <option value="PEMILIK">Pemilik</option>
             </select>
           </div>
-
+          <div class="form-group">
+            <label>Cabang</label>
+            <select name="id_cabang" class="form-control">
+              <option value="" disabled selected>-- Pilih --</option>
+              <?php
+                foreach($cabang as $cab){
+                  echo "<option value='".$cab->id_cabang."'>".$cab->nm_cabang."</option>";
+                }
+              ?>
+            </select>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -105,6 +116,14 @@
     save_method = "save"
     $("#modal_add .modal-title").text('Tambah Data')
     $("#modal_add").modal('show')
+  })
+
+  $("[name='level']").change(function(){
+    if($(this).val() == "PEMILIK"){
+      $("[name='id_cabang']").attr('disabled', true)
+    }else{
+      $("[name='id_cabang']").attr('disabled', false)
+    }
   })
 
   $("#BTN_SAVE").click(function(){
@@ -170,6 +189,7 @@
             { "data": "username"},
             { "data": "password", className: "text-center" },
             { "data": "level"},
+            { "data": "nm_cabang"},
             { "data": null, 
               "render" : function(data){
                 return "<button class='btn btn-sm btn-warning' title='Edit Data' onclick='editData("+JSON.stringify(data)+");'>Edit </button> "+
@@ -192,6 +212,7 @@
     $("[name='username']").val(data.username)
     $("[name='password']").val(data.password)
     $("[name='level']").val(data.level)
+    $("[name='id_cabang']").val(data.id_cabang)
 
     $("#modal_add").modal('show')
   }
