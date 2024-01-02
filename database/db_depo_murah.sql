@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 01 Jan 2024 pada 09.41
+-- Waktu pembuatan: 02 Jan 2024 pada 09.44
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.0.30
 
@@ -32,7 +32,7 @@ CREATE TABLE `tb_barang` (
   `id_kategori_barang` varchar(10) DEFAULT NULL,
   `nm_barang` varchar(30) DEFAULT NULL,
   `harga_barang` int(11) DEFAULT NULL,
-  `foto_barang` varchar(50) DEFAULT NULL,
+  `foto_barang` varchar(50) DEFAULT 'no_image.jpg',
   `deskripsi` varchar(255) DEFAULT NULL,
   `point_barang` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -42,7 +42,10 @@ CREATE TABLE `tb_barang` (
 --
 
 INSERT INTO `tb_barang` (`id_barang`, `id_kategori_barang`, `nm_barang`, `harga_barang`, `foto_barang`, `deskripsi`, `point_barang`) VALUES
-('BSI00001', 'K0002', 'Besi Ringan', 250000, '1704078966172.png', 'Besi Ringan Merk Bangunan,\r\nPanjan 10Meter', 25);
+('BSI00001', 'K0002', 'Besi Ringan', 250000, '1704078966172.png', 'Besi Ringan Merk Bangunan,\r\nPanjan 10Meter', 25),
+('BSI00002', 'K0002', 'Besi Hollow 3\"X5\"', 500000, '1704165099189.png', 'Besi Hollow 3\"X5\"\r\nPanjang 10meter', 100),
+('KRM00001', 'K0001', 'Keramik 30X30 Putih Polos', 100000, 'no_image.jpg', 'Keramik 30X30 Putih Polos,\r\n1 Dus isi 5 keramik', 10),
+('SMN00001', 'K0003', 'Semen tiga Roda', 150000, 'no_image.jpg', 'Semen tiga roda', 100);
 
 -- --------------------------------------------------------
 
@@ -128,7 +131,7 @@ CREATE TABLE `tb_pelanggan` (
 --
 
 INSERT INTO `tb_pelanggan` (`id_pelanggan`, `nm_pelanggan`, `alamat`, `no_pelanggan`, `point_pelanggan`, `tgl_register`) VALUES
-('P2400001', 'Pelanggan 1', 'Alamat', '08524465132', 0, '2024-01-01');
+('P2400001', 'Pelanggan 1', 'Alamat', '08524465132', 10000, '2024-01-01');
 
 -- --------------------------------------------------------
 

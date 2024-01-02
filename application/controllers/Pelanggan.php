@@ -107,6 +107,11 @@ class Pelanggan extends CI_Controller {
     echo json_encode($output);
   }
 
-
+  public function getPelanggan(){
+    $data['data'] = $this->db->query("
+      SELECT * FROM tb_pelanggan 
+    ")->result();
+    echo json_encode($data);
+  }
   
 }

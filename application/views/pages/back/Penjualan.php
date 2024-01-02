@@ -1,32 +1,9 @@
 <link href="<?php echo base_url(); ?>assets/datatable/datatables.min.css" rel="stylesheet">
 <link href="<?php echo base_url(); ?>assets/toastr/toastr.min.css" rel="stylesheet">
 <link href="<?php echo base_url(); ?>assets/select2/css/select2.min.css" rel="stylesheet">
+<link href="<?php echo base_url(); ?>assets/css/cssku.css" rel="stylesheet">
 <style>
-  .block {
-    display: block;
-    width: 100%;
-    border: none;
-    background-color: #04AA6D;
-    padding: 14px 28px;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: center;
-    margin: 0px;
-  }
-
-  .block:hover {
-    background-color: #ddd;
-    color: black;
-  }
-
-  .modClose {
-    float: right;
-    font-size: 34px;
-    color: #f5002b;
-    text-shadow: 0 1px 0 #fff;
-    opacity: 1;
-    filter: alpha(opacity=20);
-  }
+  
 </style>
 <div class="right_col" role="main">
   <div class="">
@@ -100,13 +77,13 @@
                   </div>
                   <div>
                     <div class="col-md-4" style="padding: 0px;">
-                      <button class="btn btn-warning btn-block"  id="btnCancel"><i class="ace-icon fa fa-times bigger-160"></i> Cancel</button>
+                      <button class="btn btn-warning btn-block"  id="btnCancel"><i class="ace-icon fa fa-times bigger-160"></i> Batal</button>
                     </div>
                     <div class="col-md-4" style="padding: 0px;">
-                      <button class="btn btn-light btn-block" id="btnPrint"><i class="ace-icon fa fa-print bigger-160"></i> Print</button>
+                      <button class="btn btn-light btn-block" id="btnPrint"><i class="ace-icon fa fa-print bigger-160"></i> Cetak Struk</button>
                     </div>
                     <div class="col-md-4" style="padding: 0px;">
-                      <button class="btn btn-danger btn-block" id="btnPay"><i class="ace-icon fa fa-shopping-cart bigger-160"></i> Pay</button>
+                      <button class="btn btn-danger btn-block" id="btnPay"><i class="ace-icon fa fa-shopping-cart bigger-160"></i> Bayar</button>
                     </div>
                   </div>
 
@@ -219,3 +196,138 @@
 <script src="<?php echo base_url(); ?>assets/template/back/jquery/dist/jquery.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/toastr/toastr.min.js"></script>
 <script src="<?php echo base_url(); ?>assets/select2/js/select2.min.js"></script>
+<script>
+  function actKategori(id_kategori_barang){
+    $.ajax({
+      url: "<?php echo site_url('barang/getByKategori') ?>",
+      type: "POST",
+      data: {
+        id_kategori_barang
+      },
+      dataType: "HTML",
+      success: function(data){
+        // console.log(data)
+        $("#item_data").html(data)
+      }
+    })
+  }
+
+  var noRow=0
+  function addItem(id_barang){
+
+    var ITEM_NO = $(".i_barang");
+
+    for (var i = 0; i <ITEM_NO.length; i++) {
+      if ($(".i_barang").eq(i).text() == id_barang) {
+        let jml = parseFloat( $("[name='qty[]']").eq(i).val() )
+        $("[name='qty[]']").eq(i).val(jml+1)
+        subTotal(i)
+        return
+      }
+    }
+    
+    $.ajax({
+      url: "<?php echo site_url('barang/getBarangById') ?>",
+      type: "POST",
+      data: {
+        id_barang
+      },
+      // dataType: "JSON",
+      success: function(data){
+        // console.log(data)
+        var t_data;
+        
+        datane = $.parseJSON(data);
+        data = datane['data'];
+        
+        $.each(data, function(index,array){
+          // console.log(noRow);
+          
+          t_data += '<tr id="row_'+noRow+'">'+
+                      '<td ><span class="i_barang"><input type="hidden" name="id_barang[]" value="'+array['id_barang']+'" >'+array['id_barang']+'</span><button type="button" onClick="deleteRow(\''+noRow+'\')" class="bootbox-close-button close modClose" >×</button><br>'+array['nm_barang']+'</td>'+
+                      '<td style="padding-left: 3px;padding-right: 3px;"><input type="text" name="qty[]" id="qty_'+noRow+'" onChange="subTotal(\''+noRow+'\')" class="form-control qty" style="padding: 10px 5px;" value="1"></td>'+
+                      '<td style="text-align:right;" id="harga_'+noRow+'" class="harga"><input type="hidden" name="harga[]" value="'+array['harga_barang']+'" >'+formatRupiah(array['harga_barang'], '')+'</td>'+
+                      '<td style="text-align:right;" id="subTotal_'+noRow+'" class="subTotal">'+formatRupiah(array['harga_barang'], '')+'</td>'+
+                    '</tr>'
+
+                    noRow = noRow+1;
+        });
+        $("#tb_item tbody").append(t_data);
+        total()
+      }
+    })
+  }
+
+  function subTotal(id){
+    // console.log(id)
+    let qty = $("#qty_"+id).val().split('.').join('');
+    let harga = $("#harga_"+id).text().split('.').join('');
+    
+
+    let subTotal = ( parseFloat(qty) * parseFloat(harga) ) 
+    $("#subTotal_"+id).text(formatRupiah(subTotal.toString(), ''))
+
+    total()
+  }
+
+  function total(){
+    var tot=0; var subTotal=0;
+    var jml_part = $("[name='qty[]']").length - 1;
+    for (var j = 0; j <= jml_part; j++) {
+        subTotal = $(".subTotal").eq(j).text().split('.').join('');
+        tot += parseFloat(subTotal);
+
+    }
+
+    $("#total_text").text(formatRupiah(tot.toString(), ''));
+    $("#order_text").text(formatRupiah(tot.toString(), ''));
+  }
+
+  $("#BTN_PELANGGAN").click(function(){
+    
+    table_find_pelanggan = $('#tb_select_pelanggan').DataTable( {
+          "order": [[ 1, "asc" ]],
+          "pageLength": 25,
+          "autoWidth": false,
+          "responsive": true,
+          "ajax": {
+              "url": "<?php echo site_url('pelanggan/getPelanggan') ?>",
+              "type": "POST",
+          },
+          "columns": [
+              { "data": "id_pelanggan" },{ "data": "nm_pelanggan" },{ "data": "point_pelanggan" }
+          ]
+      });
+
+    $("#modal_pelanggan").modal('show');
+  });
+
+  $('body').on( 'dblclick', '#tb_select_pelanggan tbody tr', function (e) {
+      let Rowdata = table_find_pelanggan.row( this ).data();
+      let id_pelanggan = Rowdata.id_pelanggan;
+      let nm_pelanggan = Rowdata.nm_pelanggan;
+      let point_pelanggan = Rowdata.point_pelanggan;
+
+      // max_point_pelanggan = Rowdata.point_pelanggan;
+
+      // if(jml_point >= min_point){
+      //   $("[name='jml_point']").attr('readonly', false)
+      // }else{
+      //   $("[name='jml_point']").attr('readonly', true)
+      // }
+
+      $("[name='jml_point']").attr('readonly', false)
+
+      $("[name='id_pelanggan']").val(id_pelanggan);
+      $("#nm_pelanggan").text(nm_pelanggan);
+      $("[name='jml_point']").val(point_pelanggan);
+
+      // diskon_calculate()
+
+      $('#tb_select_pelanggan').DataTable().destroy();
+      
+      $('#modal_pelanggan').modal('hide');
+
+      
+  });
+</script>
