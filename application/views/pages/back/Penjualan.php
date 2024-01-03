@@ -3,7 +3,21 @@
 <link href="<?php echo base_url(); ?>assets/select2/css/select2.min.css" rel="stylesheet">
 <link href="<?php echo base_url(); ?>assets/css/cssku.css" rel="stylesheet">
 <style>
-  
+  .form-control {
+    display: block;
+    width: 100%;
+    /* height: calc(1.5em + 0.75rem + 2px); */
+    padding: 0.335rem 0.5rem;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  }
 </style>
 <div class="right_col" role="main">
   <div class="">
@@ -42,7 +56,7 @@
                           <td style="font-size: 14px;font-weight: bold;">Pelanggan</td>
                           <td style="min-width: 150px;">
                             <input type="text" class="form-control" value="GUEST" name="id_pelanggan" style="float:left;width:70%;" placeholder="Kode Pelanggan">
-                            <button type="button" class="btn btn-secondary" id="BTN_PELANGGAN" ><i class="fa fa-list"></i></button>
+                            <button type="button" class="btn btn-sm btn-secondary" id="BTN_PELANGGAN" ><i class="fa fa-list"></i></button>
                           </td>
                           <td id="nm_pelanggan" style="font-size:15px;">Non Member</td>
                         </tr>

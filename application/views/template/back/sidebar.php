@@ -15,8 +15,8 @@
         <img src="<?php echo base_url(); ?>assets/images/img.jpg" alt="..." class="img-circle profile_img">
       </div>
       <div class="profile_info">
-        <span>Welcome,</span>
-        <h2>John Doe</h2>
+        <span>Selamat Datang,</span>
+        <h2><?= $this->session->userdata('nm_pengguna') ?></h2>
       </div>
       <div class="clearfix"></div>
     </div>

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 02 Jan 2024 pada 16.26
--- Versi server: 10.4.27-MariaDB
--- Versi PHP: 7.4.33
+-- Waktu pembuatan: 03 Jan 2024 pada 09.37
+-- Versi server: 10.4.32-MariaDB
+-- Versi PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -138,7 +138,7 @@ CREATE TABLE `tb_pelanggan` (
 --
 
 INSERT INTO `tb_pelanggan` (`id_pelanggan`, `nm_pelanggan`, `alamat`, `no_pelanggan`, `point_pelanggan`, `tgl_register`) VALUES
-('P2400001', 'Pelanggan 1', 'Alamat', '08524465132', 100, '2024-01-01');
+('P2400001', 'Pelanggan 1', 'Alamat', '08524465132', 200, '2024-01-01');
 
 -- --------------------------------------------------------
 
@@ -307,7 +307,7 @@ ALTER TABLE `tb_user`
 -- AUTO_INCREMENT untuk tabel `tb_dtl_penjualan`
 --
 ALTER TABLE `tb_dtl_penjualan`
-  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_stock_cabang`

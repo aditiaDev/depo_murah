@@ -164,5 +164,48 @@ class Penjualan extends CI_Controller {
     echo json_encode($output);
   }
 
+  public function getAllData(){
+    $id_cabang = $this->db->query("
+      SELECT id_cabang FROM tb_user WHERE id_user = '".$this->session->userdata('id_user')."'
+    ")->row()->id_cabang;
+
+    $data['data'] = $this->db->query("
+      select A.id_penjualan, A.tgl_penjualan, B.nm_pelanggan,   
+      C.nm_cabang, A.diskon, A.tot_harga_barang, A.tot_akhir 
+      from tb_penjualan A
+      left join tb_pelanggan B on A.id_pelanggan = B.id_pelanggan 
+      left join tb_cabang C on A.id_cabang = C.id_cabang 
+      where A.id_cabang = '".$id_cabang."'
+    ")->result();
+    echo json_encode($data);
+  }
+
+  public function deleteData(){
+    $id_penjualan = $this->input->post('id_penjualan');
+    $id_cabang = $this->db->query("
+      SELECT id_cabang FROM tb_user WHERE id_user = '".$this->session->userdata('id_user')."'
+    ")->row()->id_cabang;
+
+    $query = "SELECT id_barang, jumlah FROM tb_dtl_penjualan WHERE id_penjualan = '".$id_penjualan."'";
+    $sql = $this->db->query($query)->result_array();
+    foreach($sql as $row){
+      $this->db->query("
+        UPDATE tb_stock_cabang SET 
+        stock = stock + ".$row['jumlah']." 
+        WHERE id_barang = '".$row['id_barang']."' 
+        AND id_cabang = '".$id_cabang."'
+      ");
+    }
+    
+    $this->db->where('id_penjualan', $id_penjualan);
+    $this->db->delete('tb_penjualan');
+
+    $this->db->where('id_penjualan', $id_penjualan);
+    $this->db->delete('tb_dtl_penjualan');
+
+    $output = array("status" => "success", "message" => "Data Berhasil di Hapus");
+    echo json_encode($output);
+  }
+
 }
 ?>
