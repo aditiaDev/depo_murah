@@ -207,5 +207,21 @@ class Penjualan extends CI_Controller {
     echo json_encode($output);
   }
 
+  public function getIdPenjualan(){
+    $id_cabang = $this->db->query("
+      SELECT id_cabang FROM tb_user WHERE id_user = '".$this->session->userdata('id_user')."'
+    ")->row()->id_cabang;
+
+    $data['data'] = $this->db->query("
+      SELECT A.id_penjualan, A.tgl_penjualan, 
+      B.nm_pelanggan, C.nm_pengguna
+      FROM tb_penjualan A 
+      LEFT JOIN tb_pelanggan B ON A.id_pelanggan = B.id_pelanggan
+      LEFT JOIN tb_user C ON A.created_by = C.id_user 
+      WHERE A.id_cabang = '".$id_cabang."'
+    ")->result();
+    echo json_encode($data);
+  }
+
 }
 ?>

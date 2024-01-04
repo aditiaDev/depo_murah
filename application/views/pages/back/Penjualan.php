@@ -49,7 +49,14 @@
                     <table class="table table-bordered">
                       <tbody>
                         <tr>
-                          <td  style="width: 150px;font-size: 14px;font-weight: bold;">Total</td>
+                          <td style="width: 150px;font-size: 14px;font-weight: bold;">No Nota</td>
+                          <td colspan="2">
+                            <input type="text" name="id_penjualan" style="float:left;width:50%;" class="form-control" readonly>
+                            <button type="button" class="btn btn-sm btn-secondary" id="BTN_NOTA" ><i class="fa fa-search"></i></button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="font-size: 14px;font-weight: bold;">Total</td>
                           <td colspan="2" style="text-align:right;padding-right: 25px;font-weight: bold;font-family: fantasy;font-size: 14px;" id="total_text">0</td>
                         </tr>
                         <tr>
@@ -104,9 +111,9 @@
                 </div>
 
                 <div class="col-md-2" style="overflow-y: auto;height:550px;padding-left: 1px;padding-right: 1px;">
-                  <button type="button" class="btn-danger block" onclick="actKategori('ALL')">ALL</button>
+                  <button type="button" class="btn-danger block btn-kat" onclick="actKategori('ALL')">ALL</button>
                   <?php foreach($kategori as $kat){ ?>
-                    <button type="button" class="btn-danger block" onclick="actKategori('<?= $kat->id_kategori_barang  ?>')"><?= $kat->nm_kategori ?></button>
+                    <button type="button" class="btn-danger block btn-kat" onclick="actKategori('<?= $kat->id_kategori_barang  ?>')"><?= $kat->nm_kategori ?></button>
                   <?php } ?>
                 </div>
 
@@ -114,7 +121,7 @@
                   <div class="input-group">
                     <input type="text" class="form-control" name="keywords" placeholder="Cari Barang">
                     <div class="input-group-btn">
-                      <button type="button" class="btn btn-secondary no-border " id="btnSearch">
+                      <button type="button" class="btn btn-sm btn-secondary no-border " id="btnSearch">
                         <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                       </button>
                     </div>
@@ -173,6 +180,41 @@
 </div>
 <!-- Modal Pelanggan -->
 
+
+<div class="modal fade" id="modalNota"  role="dialog"  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document" >
+    <!-- <form id="form_item"> -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" >Pilih Nota</h4>
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-bordered table-hover table-striped" id="tb_select_nota">
+                  <thead>
+                      <th>No Nota</th>
+                      <th>Tanggal Transaksi</th>
+                      <th>Pelanggan</th>
+                      <th>Penginput</th>
+                  </thead>
+                  <tbody>
+                  </tbody>
+              </table>
+          </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    <!-- </form> -->
+  </div>
+</div>
+
+
 <!-- Modal Cetak -->
 <div class="modal fade" id="modal_cetak"  role="dialog"  aria-hidden="true">
   <div class="modal-dialog" role="document" style="width:700px">
@@ -211,6 +253,35 @@
 <script>
   var max_point_pelanggan
   var table_find_pelanggan
+  var table_find_nota
+
+  $("#BTN_NOTA").click(function(){
+    $('#tb_select_nota').DataTable().destroy();
+    table_find_nota = $('#tb_select_nota').DataTable( {
+        "order": [[ 1, "asc" ]],
+        "pageLength": 25,
+        "autoWidth": false,
+        "responsive": true,
+        "ajax": {
+            "url": "<?php echo site_url('penjualan/getIdPenjualan') ?>",
+            "type": "POST",
+        },
+        "columns": [
+            { "data": "id_penjualan" },{ "data": "tgl_penjualan" },{ "data": "nm_pelanggan" },{ "data": "nm_pengguna" }
+        ]
+    });
+
+    $("#modalNota").modal('show')
+  })
+
+  $('body').on( 'click', '#tb_select_nota tbody tr', function (e) {
+      let Rowdata = table_find_nota.row( this ).data();
+      let id_penjualan = Rowdata.id_penjualan;
+
+      $("[name='id_penjualan']").val(id_penjualan)
+      $("#modalNota").modal('hide')
+  })
+
   function actKategori(id_kategori_barang){
     $.ajax({
       url: "<?php echo site_url('barang/getByKategori') ?>",
@@ -449,12 +520,13 @@
           toastr.info(data.message)
           afterSave()
           $("[name='no_nota']").val(data.id)
+          $("[name='id_penjualan']").val(data.id)
           
 
           
-          // setTimeout(() => {
-          //   cetak(data.id)
-          // }, 1000);
+          setTimeout(() => {
+            cetak(data.id)
+          }, 1000);
           
         }else{
           toastr.error(data.message)
@@ -469,5 +541,27 @@
     $("[name='jml_point']").attr('disabled',true)
     $("[name='bayar']").attr('disabled',true)
     $("#btnPay").attr('disabled',true)
+    $(".btn-kat").attr('disabled',true)
+  }
+
+  $("#btnPrint").click(function(){
+    event.preventDefault()
+    let id_penjualan = $("[name='id_penjualan']").val()
+    if(id_penjualan == ""){
+      alert('Masukkan Nomor Nota')
+      return
+    }
+    cetak(id_penjualan)
+  })
+
+  function cetak(id){
+    var form = document.createElement("form");
+    $(form).attr("action", "<?php echo site_url('report/ctkStruk') ?>")
+            .attr("method", "post")
+            .attr("target", "_blank");
+    $(form).html('<input type="hidden" name="id_penjualan" value="'+id+'" />');
+    document.body.appendChild(form);
+    $(form).submit();
+    document.body.removeChild(form);
   }
 </script>
