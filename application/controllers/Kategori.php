@@ -58,7 +58,7 @@ class Kategori extends CI_Controller {
     $id = $this->generateId();
     
     $data = array(
-              "id_kategori_barang " => $id,
+              "id_kategori_barang" => $id,
               "nm_kategori" => $this->input->post('nm_kategori'),
               "kode_kategori" => $this->input->post('kode_kategori'),
             );

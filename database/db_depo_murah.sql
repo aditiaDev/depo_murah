@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 03 Jan 2024 pada 09.37
+-- Waktu pembuatan: 04 Jan 2024 pada 09.51
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.0.30
 
@@ -121,6 +121,28 @@ INSERT INTO `tb_kategori_barang` (`id_kategori_barang`, `nm_kategori`, `kode_kat
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `tb_kriteria`
+--
+
+CREATE TABLE `tb_kriteria` (
+  `id_kriteria` varchar(10) NOT NULL,
+  `kriteria` varchar(35) NOT NULL,
+  `bobot` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `tb_kriteria`
+--
+
+INSERT INTO `tb_kriteria` (`id_kriteria`, `kriteria`, `bobot`) VALUES
+('KR001', 'Jumlah Pembelian', 0),
+('KR002', 'Itensitas Pembelian', 0),
+('KR003', 'Sikap pembeli', 0),
+('KR004', 'Cara Pengantaran', 0);
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `tb_pelanggan`
 --
 
@@ -138,6 +160,7 @@ CREATE TABLE `tb_pelanggan` (
 --
 
 INSERT INTO `tb_pelanggan` (`id_pelanggan`, `nm_pelanggan`, `alamat`, `no_pelanggan`, `point_pelanggan`, `tgl_register`) VALUES
+('GUEST', 'Non Member', NULL, NULL, 0, '2024-01-01'),
 ('P2400001', 'Pelanggan 1', 'Alamat', '08524465132', 200, '2024-01-01');
 
 -- --------------------------------------------------------
@@ -206,6 +229,41 @@ INSERT INTO `tb_stock_cabang` (`id_stock`, `id_cabang`, `id_barang`, `stock`) VA
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `tb_sub_kriteria`
+--
+
+CREATE TABLE `tb_sub_kriteria` (
+  `id_sub_kriteria` varchar(10) NOT NULL,
+  `id_kriteria` varchar(10) NOT NULL,
+  `sub_kriteria` varchar(50) NOT NULL,
+  `bobot` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `tb_sub_kriteria`
+--
+
+INSERT INTO `tb_sub_kriteria` (`id_sub_kriteria`, `id_kriteria`, `sub_kriteria`, `bobot`) VALUES
+('SK001', 'KR001', '>75', 0),
+('SK002', 'KR001', '51 – 75', 0),
+('SK003', 'KR001', '26 – 50', 0),
+('SK004', 'KR001', '1 – 25', 0),
+('SK005', 'KR002', '> 15', 0),
+('SK006', 'KR002', '11 – 15', 0),
+('SK007', 'KR002', '6 – 10', 0),
+('SK008', 'KR002', '1 – 5', 0),
+('SK009', 'KR003', 'Sangat Baik', 0),
+('SK010', 'KR003', 'Baik', 0),
+('SK011', 'KR003', 'Cukup Baik', 0),
+('SK012', 'KR003', 'Kurang Baik', 0),
+('SK013', 'KR004', 'Ambil sendiri', 0),
+('SK014', 'KR004', 'Diantar lokasi <= 5 km', 0),
+('SK015', 'KR004', 'Diantar lokasi > 5 km', 0),
+('SK016', 'KR004', 'Jasa antar lain', 0);
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `tb_user`
 --
 
@@ -264,6 +322,12 @@ ALTER TABLE `tb_kategori_barang`
   ADD PRIMARY KEY (`id_kategori_barang`);
 
 --
+-- Indeks untuk tabel `tb_kriteria`
+--
+ALTER TABLE `tb_kriteria`
+  ADD PRIMARY KEY (`id_kriteria`);
+
+--
 -- Indeks untuk tabel `tb_pelanggan`
 --
 ALTER TABLE `tb_pelanggan`
@@ -292,6 +356,12 @@ ALTER TABLE `tb_sikap_pelanggan`
 --
 ALTER TABLE `tb_stock_cabang`
   ADD PRIMARY KEY (`id_stock`);
+
+--
+-- Indeks untuk tabel `tb_sub_kriteria`
+--
+ALTER TABLE `tb_sub_kriteria`
+  ADD PRIMARY KEY (`id_sub_kriteria`);
 
 --
 -- Indeks untuk tabel `tb_user`

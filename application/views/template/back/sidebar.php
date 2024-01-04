@@ -33,11 +33,20 @@
           <li class="<?= ($this->uri->segment(1) == 'master') ? 'current-page' : '' ?>">
             <a><i class="fa fa-desktop"></i> Master Data <span class="fa fa-chevron-down"></span></a>
             <ul class="nav child_menu">
-              <li><a href="<?php echo base_url("master/user")?>">User</a></li>
               <li><a href="<?php echo base_url("master/cabang")?>">Cabang</a></li>
+              <li><a href="<?php echo base_url("master/user")?>">User</a></li>
               <li><a href="<?php echo base_url("master/kategori")?>">Kategori</a></li>
               <li><a href="<?php echo base_url("master/barang")?>">Barang</a></li>
               <li><a href="<?php echo base_url("master/pelanggan")?>">Pelanggan</a></li>
+              <li><a href="<?php echo base_url("master/kriteria")?>">Kriteria</a></li>
+              <li><a href="<?php echo base_url("master/sub_kriteria")?>">Sub Kriteria</a></li>
+            </ul>
+          </li>
+
+          <li class="<?= ($this->uri->segment(1) == 'spk') ? 'current-page' : '' ?>">
+            <a><i class="fa fa-list"></i> Pendukung Keputusan <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="<?php echo base_url("spk/penilaian")?>">Input Penilaian</a></li>
             </ul>
           </li>
 

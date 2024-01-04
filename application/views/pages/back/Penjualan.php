@@ -70,7 +70,8 @@
                         <tr>
                           <td></td>
                           <td style="font-size:15px;">Point Pelanggan</td>
-                          <td><input type="number" name="jml_point" onchange="diskon_calculate()" readonly class="form-control" value="0"></td>
+                          <!-- <td><input type="number" name="jml_point" onchange="diskon_calculate()" readonly class="form-control" value="0"></td> -->
+                          <td><input type="number" name="jml_point"  readonly class="form-control" value="0"></td>
                         </tr>
                         <tr>
                           <td  style="font-size: 18px;font-weight: bold;">Total Akhir</td>
@@ -424,7 +425,7 @@
       $("#nm_pelanggan").text(nm_pelanggan);
       $("[name='jml_point']").val(point_pelanggan);
 
-      diskon_calculate()
+      // diskon_calculate()
 
       $('#tb_select_pelanggan').DataTable().destroy();
       

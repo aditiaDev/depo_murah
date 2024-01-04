@@ -58,6 +58,10 @@ $route['master/cabang'] = 'cabang';
 $route['master/kategori'] = 'kategori';
 $route['master/barang'] = 'barang';
 $route['master/pelanggan'] = 'pelanggan';
+$route['master/kriteria'] = 'kriteria';
+$route['master/sub_kriteria'] = 'sub_kriteria';
+
+$route['spk/penilaian'] = 'penilaian';
 
 $route['transaksi/penjualan'] = 'penjualan';
 $route['transaksi/datapenjualan'] = 'penjualan/datapenjualan';
