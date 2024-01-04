@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 04 Jan 2024 pada 09.51
--- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.0.30
+-- Waktu pembuatan: 04 Jan 2024 pada 16.31
+-- Versi server: 10.4.27-MariaDB
+-- Versi PHP: 7.4.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -97,6 +97,28 @@ CREATE TABLE `tb_dtl_penjualan` (
   `subtotal` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `tb_dtl_penjualan`
+--
+
+INSERT INTO `tb_dtl_penjualan` (`id_dtl_penjualan`, `id_penjualan`, `id_barang`, `jumlah`, `harga_barang`, `subtotal`) VALUES
+(4, 'J2400001', 'BSI00002', 5, 500000, 2500000),
+(5, 'J2400002', 'BSI00002', 10, 500000, 5000000),
+(6, 'J2400002', 'BSI00001', 20, 250000, 5000000),
+(7, 'J2400003', 'BSI00001', 10, 250000, 2500000),
+(8, 'J2400003', 'KRM00001', 100, 100000, 10000000),
+(9, 'J2400003', 'SMN00001', 200, 150000, 30000000),
+(10, 'J2400004', 'KRM00001', 100, 100000, 10000000),
+(11, 'J2400005', 'BSI00002', 5, 500000, 2500000),
+(12, 'J2400006', 'KRM00001', 50, 100000, 5000000),
+(13, 'J2400007', 'BSI00002', 3, 500000, 1500000),
+(14, 'J2400008', 'KRM00001', 10, 100000, 1000000),
+(15, 'J2400009', 'SMN00001', 5, 150000, 750000),
+(16, 'J2400010', 'BSI00002', 6, 500000, 3000000),
+(17, 'J2400010', 'SMN00001', 10, 150000, 1500000),
+(18, 'J2400011', 'SMN00001', 12, 150000, 1800000),
+(19, 'J2400012', 'BSI00001', 5, 250000, 1250000);
+
 -- --------------------------------------------------------
 
 --
@@ -161,7 +183,26 @@ CREATE TABLE `tb_pelanggan` (
 
 INSERT INTO `tb_pelanggan` (`id_pelanggan`, `nm_pelanggan`, `alamat`, `no_pelanggan`, `point_pelanggan`, `tgl_register`) VALUES
 ('GUEST', 'Non Member', NULL, NULL, 0, '2024-01-01'),
-('P2400001', 'Pelanggan 1', 'Alamat', '08524465132', 200, '2024-01-01');
+('P2400001', 'Pelanggan 1', 'Alamat', '08524465132', 125, '2024-01-01'),
+('P2400002', 'Pelanggan 2', 'Alamat', '08524465133', 135, '2024-01-01'),
+('P2400003', 'Pelanggan 3', 'Alamat', '08524465134', 10, '2024-01-01'),
+('P2400004', 'Pelanggan 4', 'Alamat', '08524465135', 100, '2024-01-01'),
+('P2400005', 'Pelanggan 5', 'Alamat', '08524465136', 20000, '2024-01-01'),
+('P2400006', 'Pelanggan 6', 'Alamat', '08524465137', 10, '2024-01-01'),
+('P2400007', 'Pelanggan 7', 'Alamat', '08524465138', 100, '2024-01-01'),
+('P2400008', 'Pelanggan 8', 'Alamat', '08524465139', 10, '2024-01-01'),
+('P2400009', 'Pelanggan 9', 'Alamat', '08524465140', 100, '2024-01-01'),
+('P2400010', 'Pelanggan 10', 'Alamat', '08524465141', 200, '2024-01-01'),
+('P2400011', 'Pelanggan 11', 'Alamat', '08524465142', 1000, '2024-01-01'),
+('P2400012', 'Pelanggan 12', 'Alamat', '08524465143', 1000, '2024-01-01'),
+('P2400013', 'Pelanggan 13', 'Alamat', '08524465144', 20000, '2024-01-01'),
+('P2400014', 'Pelanggan 14', 'Alamat', '08524465145', 304000, '2024-01-01'),
+('P2400015', 'Pelanggan 15', 'Alamat', '08524465146', 2000, '2024-01-01'),
+('P2400016', 'Pelanggan 16', 'Alamat', '08524465147', 30000, '2024-01-01'),
+('P2400017', 'Pelanggan 17', 'Alamat', '08524465148', 300, '2024-01-01'),
+('P2400018', 'Pelanggan 18', 'Alamat', '08524465149', 10000, '2024-01-01'),
+('P2400019', 'Pelanggan 19', 'Alamat', '08524465150', 1000, '2024-01-01'),
+('P2400020', 'Pelanggan 20', 'Alamat', '08524465151', 1000, '2024-01-01');
 
 -- --------------------------------------------------------
 
@@ -192,6 +233,55 @@ CREATE TABLE `tb_penjualan` (
   `tot_akhir` int(11) NOT NULL,
   `created_by` varchar(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `tb_penjualan`
+--
+
+INSERT INTO `tb_penjualan` (`id_penjualan`, `tgl_penjualan`, `id_pelanggan`, `id_cabang`, `diskon`, `tot_harga_barang`, `tot_akhir`, `created_by`) VALUES
+('J2400001', '2024-01-03 13:11:26', 'P2400001', 'CB001', 0, 2500000, 2500000, 'U2400002'),
+('J2400002', '2024-01-04 14:01:04', 'P2400001', 'CB001', 300, 10000000, 10000000, 'U2400002'),
+('J2400003', '2024-01-04 14:02:06', 'P2400002', 'CB001', 10000, 42500000, 42500000, 'U2400002'),
+('J2400004', '2024-01-04 14:02:33', 'P2400003', 'CB001', 1000, 10000000, 10000000, 'U2400002'),
+('J2400005', '2024-01-04 14:02:58', 'P2400004', 'CB001', 1000, 2500000, 2500000, 'U2400002'),
+('J2400006', '2024-01-04 14:03:21', 'P2400006', 'CB001', 304000, 5000000, 5000000, 'U2400002'),
+('J2400007', '2024-01-04 14:03:54', 'P2400007', 'CB001', 2000, 1500000, 1500000, 'U2400002'),
+('J2400008', '2024-01-04 14:04:17', 'P2400008', 'CB001', 30000, 1000000, 1000000, 'U2400002'),
+('J2400009', '2024-01-04 14:04:46', 'P2400010', 'CB001', 10000, 750000, 750000, 'U2400002'),
+('J2400010', '2024-01-04 14:05:16', 'P2400010', 'CB001', 100, 4500000, 4500000, 'U2400002'),
+('J2400011', '2024-01-04 14:05:57', 'P2400009', 'CB001', 300, 1800000, 1800000, 'U2400002'),
+('J2400012', '2024-01-04 14:12:44', 'P2400005', 'CB001', 0, 1250000, 1250000, 'U2400002');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `tb_real_kriteria_pelanggan`
+--
+
+CREATE TABLE `tb_real_kriteria_pelanggan` (
+  `id_pelanggan` varchar(15) NOT NULL,
+  `tahun` varchar(4) NOT NULL,
+  `KR001` int(11) NOT NULL,
+  `KR002` int(11) NOT NULL,
+  `KR003` varchar(10) NOT NULL,
+  `KR004` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `tb_real_kriteria_pelanggan`
+--
+
+INSERT INTO `tb_real_kriteria_pelanggan` (`id_pelanggan`, `tahun`, `KR001`, `KR002`, `KR003`, `KR004`) VALUES
+('P2400001', '2024', 35, 2, 'SK009', 'SK013'),
+('P2400002', '2024', 310, 1, 'SK009', 'SK014'),
+('P2400003', '2024', 100, 1, 'SK010', 'SK013'),
+('P2400004', '2024', 5, 1, 'SK010', 'SK015'),
+('P2400005', '2024', 5, 1, 'SK011', 'SK014'),
+('P2400006', '2024', 50, 1, 'SK009', 'SK014'),
+('P2400007', '2024', 3, 1, 'SK011', 'SK015'),
+('P2400008', '2024', 10, 1, 'SK011', 'SK013'),
+('P2400009', '2024', 12, 1, 'SK012', 'SK016'),
+('P2400010', '2024', 21, 2, 'SK009', 'SK013');
 
 -- --------------------------------------------------------
 
@@ -224,7 +314,10 @@ CREATE TABLE `tb_stock_cabang` (
 --
 
 INSERT INTO `tb_stock_cabang` (`id_stock`, `id_cabang`, `id_barang`, `stock`) VALUES
-(1, 'CB001', 'BSI00002', 100);
+(1, 'CB001', 'BSI00002', 926),
+(2, 'CB001', 'BSI00001', 465),
+(3, 'CB001', 'KRM00001', 9740),
+(4, 'CB001', 'SMN00001', 273);
 
 -- --------------------------------------------------------
 
@@ -377,13 +470,13 @@ ALTER TABLE `tb_user`
 -- AUTO_INCREMENT untuk tabel `tb_dtl_penjualan`
 --
 ALTER TABLE `tb_dtl_penjualan`
-  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_stock_cabang`
 --
 ALTER TABLE `tb_stock_cabang`
-  MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
