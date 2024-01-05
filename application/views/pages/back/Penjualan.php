@@ -216,32 +216,39 @@
 </div>
 
 
-<!-- Modal Cetak -->
-<div class="modal fade" id="modal_cetak"  role="dialog"  aria-hidden="true">
+<!-- Modal Sikap -->
+<div class="modal fade" id="modal_sikap" data-keyboard="false" data-backdrop="static">
   <div class="modal-dialog" role="document" style="width:700px">
     <!-- <form id="form_item"> -->
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">Masukkan No Penjualan</h4>
+          <h4 class="modal-title" >Perilaku Pembeli</h4>
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+          </button>
         </div>
         <div class="modal-body">
-          <div class="row">
-            <div class="col-md-12">
-              <input type="text" class="form-control" name="no_nota" placeholder="No NOTA">
+          <form id="FRM_SIKAP">
+            <div class="form-group">
+              <label>Sikap Pelanggan</label>
+              <select name="id_sub_kriteria" class="form-control">
+                <option value="" selected disabled>Pilih</option>
+                <?php
+                  foreach($sub_kriteria as $sk){
+                    echo "<option value='".$sk->id_sub_kriteria."'>".$sk->sub_kriteria."</option>";
+                  }
+                ?>
+              </select>
             </div>
-          </div>
+          </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button class="btn btn-primary" id="okPrint">OK</button>
+          <button type="button" class="btn btn-primary" id="btnPerilaku">Simpan</button>
         </div>
       </div>
     <!-- </form> -->
   </div>
 </div>
-<!-- Modal Cetak -->
+<!-- Modal Sikap -->
 
 <!-- <form id="payment-form" method="post" action="<?=site_url()?>snap/finish">
   <input type="hidden" name="result_type" id="result-type" value=""></div>
@@ -523,7 +530,10 @@
           $("[name='no_nota']").val(data.id)
           $("[name='id_penjualan']").val(data.id)
           
-
+          if($("[name='id_pelanggan']").val() != "GUEST"){
+            $("#modal_sikap").modal('show')
+          }
+          
           
           setTimeout(() => {
             cetak(data.id)
@@ -565,4 +575,31 @@
     $(form).submit();
     document.body.removeChild(form);
   }
+
+  $("#btnPerilaku").click(function(){
+    event.preventDefault()
+    frmData = $("#FRM_SIKAP").serialize()
+    frmData += "&id_pelanggan="+$("[name='id_pelanggan']").val()+"&id_penjualan="+$("[name='id_penjualan']").val()
+    $.ajax({
+      url: "<?php echo site_url('penjualan/savePerilaku') ?>",
+      type: "POST",
+      dataType: "JSON",
+      data: frmData,
+      beforeSend: function () {
+        $("#LOADER").fadeIn(300);
+      },
+      complete: function () {
+        $("#LOADER").fadeOut(500);
+      },
+      success: function(data){
+        
+        if (data.status == "success") {
+          toastr.info(data.message)
+          $("#modal_sikap").modal('hide')
+        }else{
+          toastr.error(data.message)
+        }
+      }
+    })
+  })
 </script>

@@ -21,6 +21,21 @@ class Penilaian extends CI_Controller {
     $this->load->view('template/back/footer');
 	}
 
+  public function getPenilaianByYear(){
+    $data['data'] = $this->db->query("
+      SELECT 
+      A.id_pelanggan, B.nm_pelanggan, 
+      A.KR001, A.KR002, C.sub_kriteria sikap_pembeli, D.sub_kriteria pengantaran
+      FROM tb_real_kriteria_pelanggan A
+      LEFT JOIN tb_pelanggan B ON A.id_pelanggan = B.id_pelanggan 
+      LEFT JOIN tb_sub_kriteria C ON C.id_sub_kriteria = A.KR003
+      LEFT JOIN tb_sub_kriteria D ON D.id_sub_kriteria = A.KR004
+      where tahun = '".$this->input->post('tahun')."'
+      ORDER BY A.id_pelanggan
+    ")->result();
+    echo json_encode($data);
+  }
+
   public function getPenilaian(){
     $data = $this->db->query("
       SELECT 

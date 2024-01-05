@@ -62,6 +62,42 @@
 
   $("#btnTampil").click(function(){
     event.preventDefault()
-
+    REFRESH_DATA()
   })
+
+  function REFRESH_DATA(){
+    $('#tb_data').DataTable().destroy();
+    tb_data =  $("#tb_data").DataTable({
+        "order": [[ 0, "asc" ]],
+        "pageLength": 25,
+        "autoWidth": false,
+        "responsive": true,
+        "ajax": {
+            "url": "<?php echo site_url('penilaian/getPenilaianByYear') ?>",
+            "type": "POST",
+            "data": {
+              "tahun": $("[name='tahun']").val()
+            },
+        },
+        "columns": [
+            {
+                "data": null,
+                render: function (data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                }
+                , className: "text-center"
+            },
+            { "data": null,
+              "render": function(data){
+                return data.id_pelanggan+"<br>"+data.nm_pelanggan
+              }
+            },
+            { "data": "KR001"},
+            { "data": "KR002"},
+            { "data": "sikap_pembeli"},
+            { "data": "pengantaran"},
+        ]
+      }
+    )
+  }
 </script>

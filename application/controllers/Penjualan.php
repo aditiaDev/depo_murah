@@ -14,6 +14,10 @@ class Penjualan extends CI_Controller {
     $this->db->order_by("nm_kategori", "asc");
     $data['kategori'] = $this->db->get('tb_kategori_barang')->result();
 
+    $this->db->where("id_kriteria", "KR003");
+    $this->db->order_by("id_sub_kriteria", "asc");
+    $data['sub_kriteria'] = $this->db->get('tb_sub_kriteria')->result();
+
 		$this->load->view('template/back/header');
     $this->load->view('template/back/sidebar');
     $this->load->view('template/back/topnav');
@@ -221,6 +225,43 @@ class Penjualan extends CI_Controller {
       WHERE A.id_cabang = '".$id_cabang."'
     ")->result();
     echo json_encode($data);
+  }
+
+  public function generateIdSikap(){
+    $unik = 'SK'.date('Y');
+    $kode = $this->db->query("SELECT MAX(id_sikap) LAST_NO FROM tb_sikap_pelanggan WHERE id_sikap LIKE '".$unik."%'")->row()->LAST_NO;
+    $urutan = (int) substr($kode, 6, 4);
+    
+    $urutan++;
+    
+    $huruf = $unik;
+    $kode = $huruf . sprintf("%04s", $urutan);
+    return $kode;
+  }
+
+  public function savePerilaku(){
+    $this->load->library('form_validation');
+    $this->form_validation->set_rules('id_sub_kriteria', 'Nilai Sikap', 'required');
+    $this->form_validation->set_rules('id_pelanggan', 'Pelanggan', 'required');
+    $this->form_validation->set_rules('id_penjualan', 'ID Penjualan', 'required');
+
+    if($this->form_validation->run() == FALSE){
+      $output = array("status" => "error", "message" => validation_errors());
+      echo json_encode($output);
+      return false;
+    }
+
+    $id = $this->generateIdSikap();
+    
+    $data = array(
+              "id_sikap " => $id,
+              "id_pelanggan" => $this->input->post('id_pelanggan'),
+              "id_penjualan" => $this->input->post('id_penjualan'),
+              "id_sub_kriteria" => $this->input->post('id_sub_kriteria'),
+            );
+    $this->db->insert('tb_sikap_pelanggan', $data);
+    $output = array("status" => "success", "message" => "Data Berhasil Disimpan");
+    echo json_encode($output);
   }
 
 }
