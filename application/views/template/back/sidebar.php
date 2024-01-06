@@ -46,7 +46,8 @@
           <li class="<?= ($this->uri->segment(1) == 'spk') ? 'current-page' : '' ?>">
             <a><i class="fa fa-list"></i> Pendukung Keputusan <span class="fa fa-chevron-down"></span></a>
             <ul class="nav child_menu">
-              <li><a href="<?php echo base_url("spk/penilaian")?>">Input Penilaian</a></li>
+              <li><a href="<?php echo base_url("spk/penilaian")?>">Input Nilai SPK</a></li>
+              <li><a href="<?php echo base_url("spk/perhitungan")?>">Perhitungan SPK</a></li>
             </ul>
           </li>
 

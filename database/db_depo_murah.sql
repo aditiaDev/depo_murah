@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 05 Jan 2024 pada 09.50
--- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.0.30
+-- Waktu pembuatan: 06 Jan 2024 pada 01.27
+-- Versi server: 10.4.27-MariaDB
+-- Versi PHP: 7.4.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -159,10 +159,10 @@ CREATE TABLE `tb_kriteria` (
 --
 
 INSERT INTO `tb_kriteria` (`id_kriteria`, `kriteria`, `bobot`) VALUES
-('KR001', 'Jumlah Pembelian', 0),
-('KR002', 'Itensitas Pembelian', 0),
-('KR003', 'Sikap pembeli', 0),
-('KR004', 'Cara Pengantaran', 0);
+('KR001', 'Jumlah Pembelian', 0.521),
+('KR002', 'Itensitas Pembelian', 0.271),
+('KR003', 'Sikap pembeli', 0.146),
+('KR004', 'Cara Pengantaran', 0.063);
 
 -- --------------------------------------------------------
 
@@ -347,22 +347,22 @@ CREATE TABLE `tb_sub_kriteria` (
 --
 
 INSERT INTO `tb_sub_kriteria` (`id_sub_kriteria`, `id_kriteria`, `sub_kriteria`, `bobot`) VALUES
-('SK001', 'KR001', '>75', 0),
-('SK002', 'KR001', '51 – 75', 0),
-('SK003', 'KR001', '26 – 50', 0),
-('SK004', 'KR001', '1 – 25', 0),
-('SK005', 'KR002', '> 15', 0),
-('SK006', 'KR002', '11 – 15', 0),
-('SK007', 'KR002', '6 – 10', 0),
-('SK008', 'KR002', '1 – 5', 0),
-('SK009', 'KR003', 'Sangat Baik', 0),
-('SK010', 'KR003', 'Baik', 0),
-('SK011', 'KR003', 'Cukup Baik', 0),
-('SK012', 'KR003', 'Kurang Baik', 0),
-('SK013', 'KR004', 'Ambil sendiri', 0),
-('SK014', 'KR004', 'Diantar lokasi <= 5 km', 0),
-('SK015', 'KR004', 'Diantar lokasi > 5 km', 0),
-('SK016', 'KR004', 'Jasa antar lain', 0);
+('SK001', 'KR001', '>75', 0.521),
+('SK002', 'KR001', '51 – 75', 0.271),
+('SK003', 'KR001', '26 – 50', 0.146),
+('SK004', 'KR001', '1 – 25', 0.063),
+('SK005', 'KR002', '> 15', 0.521),
+('SK006', 'KR002', '11 – 15', 0.271),
+('SK007', 'KR002', '6 – 10', 0.146),
+('SK008', 'KR002', '1 – 5', 0.063),
+('SK009', 'KR003', 'Sangat Baik', 0.521),
+('SK010', 'KR003', 'Baik', 0.271),
+('SK011', 'KR003', 'Cukup Baik', 0.146),
+('SK012', 'KR003', 'Kurang Baik', 0.063),
+('SK013', 'KR004', 'Ambil sendiri', 0.521),
+('SK014', 'KR004', 'Diantar lokasi <= 5 km', 0.271),
+('SK015', 'KR004', 'Diantar lokasi > 5 km', 0.146),
+('SK016', 'KR004', 'Jasa antar lain', 0.063);
 
 -- --------------------------------------------------------
 

@@ -62,6 +62,7 @@ $route['master/kriteria'] = 'kriteria';
 $route['master/sub_kriteria'] = 'sub_kriteria';
 
 $route['spk/penilaian'] = 'penilaian';
+$route['spk/perhitungan'] = 'penilaian/perhitungan';
 
 $route['transaksi/penjualan'] = 'penjualan';
 $route['transaksi/datapenjualan'] = 'penjualan/datapenjualan';

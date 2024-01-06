@@ -142,5 +142,119 @@ class Penilaian extends CI_Controller {
     echo json_encode($output);
   }
 
+  public function perhitungan(){
+    $this->load->view('template/back/header');
+    $this->load->view('template/back/sidebar');
+    $this->load->view('template/back/topnav');
+    $this->load->view('pages/back/perhitungan');
+    $this->load->view('template/back/footer');
+  }
+
+  public function getPerhitunganSPK(){
+    $tahun = $this->input->post('tahun');
+
+    $arr = [];
+    $dthitungBobot = $this->db->query("
+      SELECT A.id_kriteria, COUNT(B.id_sub_kriteria) JML_KRITERIA
+      FROM tb_kriteria A
+      INNER JOIN tb_sub_kriteria B ON A.id_kriteria = B.id_kriteria
+      GROUP BY A.id_kriteria
+      ORDER BY A.id_kriteria
+    ")->result_array();
+    $a=0;
+    $b=0;
+    foreach($dthitungBobot as $row){
+      $id_kriteria = $row['id_kriteria'];
+      $jml_subKriteria = $row['JML_KRITERIA'];
+      $b=$b+1;
+      $bobotKriteria = 0;
+      $c=0;
+      for ($i=$a; $i < $jml_subKriteria; $i++) { 
+
+        $rumus = 1/$b;
+        $bobotKriteria += $rumus;
+        $arr['data'][$a]['id_kriteria'] = $id_kriteria;
+        $arr['data'][$a]['bobot'] = round($bobotKriteria/$jml_subKriteria,3);
+        $b++;
+        $c++;
+        
+      }
+      
+      $a++;
+      $b=$a;
+    }
+
+    // echo "<pre>";
+    // print_r($arr);
+    // echo "</pre>";
+
+    foreach($arr['data'] as $row){
+
+      $query = "UPDATE tb_kriteria SET bobot = '".$row['bobot']."' 
+      WHERE id_kriteria = '".$row['id_kriteria']."'";
+      $this->db->query($query);
+    }
+
+    $dtsub_kriteria = $this->db->query("
+      SELECT id_kriteria, id_sub_kriteria FROM tb_sub_kriteria
+      ORDER BY id_kriteria, id_sub_kriteria
+    ")->result_array();
+
+    $i=0;
+    foreach($dtsub_kriteria as $row){
+      
+      $query = "UPDATE tb_sub_kriteria SET bobot = '".$arr['data'][$i]['bobot']."' 
+      WHERE id_kriteria = '".$row['id_kriteria']."' AND id_sub_kriteria = '".$row['id_sub_kriteria']."'";
+      $this->db->query($query);
+
+      if($i < (count($arr['data']) - 1)){
+        $i++;
+      }else{
+        $i=0;
+      }
+      
+    }
+
+
+    $html = "";
+    $thKriteria = "";
+    $dtKriteria = $this->db->query("
+      SELECT id_kriteria, kriteria FROM tb_kriteria 
+      ORDER BY id_kriteria
+    ")->result_array();
+
+    foreach($dtKriteria as $row){
+      $thKriteria .= "<th>".$row['id_kriteria']."</br>".$row['kriteria']."</th>";
+    }
+
+    $html="<table class='table table-bordered' style='text-align:center;'>
+            <thead>
+              <tr>
+                <th>ID Pelanggan</th>
+                <th>Nama Pelanggan</th>
+                ".$thKriteria."
+              </tr>
+            </thead>
+            <tbody>";
+    $dtPelanggan = $this->db->query("
+      SELECT A.id_pelanggan, A.nm_pelanggan FROM tb_pelanggan A
+      INNER JOIN tb_penjualan B ON A.id_pelanggan = B.id_pelanggan
+      WHERE DATE_FORMAT(B.tgl_penjualan,'%Y') = '".$tahun."'
+      GROUP BY A.id_pelanggan, A.nm_pelanggan
+      ORDER BY A.id_pelanggan
+    ")->result_array();
+    foreach($dtPelanggan as $row){
+      $html .= "<tr>
+                  <td>".$row['id_pelanggan']."</td>
+                  <td>".$row['nm_pelanggan']."</td>
+              </tr>";
+    }
+
+    $html .= "</tbody></table>";
+
+    // echo $html;
+
+  }
+
 }
 ?>
