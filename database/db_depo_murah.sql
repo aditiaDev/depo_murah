@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 06 Jan 2024 pada 01.27
--- Versi server: 10.4.27-MariaDB
--- Versi PHP: 7.4.33
+-- Waktu pembuatan: 06 Jan 2024 pada 05.18
+-- Versi server: 10.4.32-MariaDB
+-- Versi PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -264,8 +264,10 @@ INSERT INTO `tb_penjualan` (`id_penjualan`, `tgl_penjualan`, `id_pelanggan`, `id
 CREATE TABLE `tb_real_kriteria_pelanggan` (
   `id_pelanggan` varchar(15) NOT NULL,
   `tahun` varchar(4) NOT NULL,
-  `KR001` int(11) NOT NULL,
-  `KR002` int(11) NOT NULL,
+  `jml_pembelian` int(11) NOT NULL,
+  `intensitas_pembelian` int(11) NOT NULL,
+  `KR001` varchar(10) NOT NULL,
+  `KR002` varchar(10) NOT NULL,
   `KR003` varchar(10) NOT NULL,
   `KR004` varchar(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -274,17 +276,17 @@ CREATE TABLE `tb_real_kriteria_pelanggan` (
 -- Dumping data untuk tabel `tb_real_kriteria_pelanggan`
 --
 
-INSERT INTO `tb_real_kriteria_pelanggan` (`id_pelanggan`, `tahun`, `KR001`, `KR002`, `KR003`, `KR004`) VALUES
-('P2400001', '2024', 35, 2, 'SK009', 'SK013'),
-('P2400002', '2024', 310, 1, 'SK009', 'SK014'),
-('P2400003', '2024', 100, 1, 'SK010', 'SK013'),
-('P2400004', '2024', 5, 1, 'SK010', 'SK015'),
-('P2400005', '2024', 5, 1, 'SK011', 'SK014'),
-('P2400006', '2024', 50, 1, 'SK009', 'SK014'),
-('P2400007', '2024', 3, 1, 'SK011', 'SK015'),
-('P2400008', '2024', 10, 1, 'SK011', 'SK013'),
-('P2400009', '2024', 12, 1, 'SK012', 'SK016'),
-('P2400010', '2024', 21, 2, 'SK009', 'SK013');
+INSERT INTO `tb_real_kriteria_pelanggan` (`id_pelanggan`, `tahun`, `jml_pembelian`, `intensitas_pembelian`, `KR001`, `KR002`, `KR003`, `KR004`) VALUES
+('P2400001', '2024', 95, 3, 'SK001', 'SK008', 'SK009', 'SK013'),
+('P2400002', '2024', 310, 1, 'SK001', 'SK008', 'SK009', 'SK014'),
+('P2400003', '2024', 100, 1, 'SK001', 'SK008', 'SK009', 'SK015'),
+('P2400004', '2024', 5, 1, 'SK004', 'SK008', 'SK010', 'SK013'),
+('P2400005', '2024', 5, 1, 'SK004', 'SK008', 'SK011', 'SK015'),
+('P2400006', '2024', 50, 1, 'SK003', 'SK008', 'SK009', 'SK013'),
+('P2400007', '2024', 3, 1, 'SK004', 'SK008', 'SK011', 'SK014'),
+('P2400008', '2024', 10, 1, 'SK004', 'SK008', 'SK011', 'SK016'),
+('P2400009', '2024', 12, 1, 'SK004', 'SK008', 'SK012', 'SK013'),
+('P2400010', '2024', 21, 2, 'SK004', 'SK008', 'SK011', 'SK013');
 
 -- --------------------------------------------------------
 

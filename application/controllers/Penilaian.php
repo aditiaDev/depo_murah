@@ -25,11 +25,15 @@ class Penilaian extends CI_Controller {
     $data['data'] = $this->db->query("
       SELECT 
       A.id_pelanggan, B.nm_pelanggan, 
-      A.KR001, A.KR002, C.sub_kriteria sikap_pembeli, D.sub_kriteria pengantaran
+      E.sub_kriteria jumlah_pembelian, F.sub_kriteria intensitas_pembelian, 
+      C.sub_kriteria sikap_pembeli, D.sub_kriteria pengantaran
       FROM tb_real_kriteria_pelanggan A
       LEFT JOIN tb_pelanggan B ON A.id_pelanggan = B.id_pelanggan 
       LEFT JOIN tb_sub_kriteria C ON C.id_sub_kriteria = A.KR003
       LEFT JOIN tb_sub_kriteria D ON D.id_sub_kriteria = A.KR004
+
+      LEFT JOIN tb_sub_kriteria E ON E.id_sub_kriteria = A.KR001
+      LEFT JOIN tb_sub_kriteria F ON F.id_sub_kriteria = A.KR002
       where tahun = '".$this->input->post('tahun')."'
       ORDER BY A.id_pelanggan
     ")->result();
@@ -126,11 +130,37 @@ class Penilaian extends CI_Controller {
     $this->db->query("DELETE FROM tb_real_kriteria_pelanggan WHERE tahun = '".$this->input->post('tahun')."'");
 
     foreach($this->input->post('id_pelanggan') as $key => $each){
+
+      $jml_pembelian = $this->input->post('jml_pembelian')[$key];
+      if($jml_pembelian > 75){
+        $KR001 = "SK001";
+      }elseif($jml_pembelian >= 51 AND $jml_pembelian <= 75){
+        $KR001 = "SK002";
+      }elseif($jml_pembelian >= 26 AND $jml_pembelian <= 50){
+        $KR001 = "SK003";
+      }else{
+        $KR001 = "SK004";
+      }
+
+      $intensitas_pembelian = $this->input->post('intensitas_pembelian')[$key];
+      if($intensitas_pembelian > 15){
+        $KR002 = "SK005";
+      }elseif($intensitas_pembelian >= 11 AND $intensitas_pembelian <= 15){
+        $KR002 = "SK006";
+      }elseif($intensitas_pembelian >= 6 AND $intensitas_pembelian <= 10){
+        $KR002 = "SK007";
+      }else{
+        $KR002 = "SK008";
+      }
+
+
       $data = array(
         "id_pelanggan" => $this->input->post('id_pelanggan')[$key],
         "tahun" => $this->input->post('tahun'),
-        "KR001" => $this->input->post('jml_pembelian')[$key],
-        "KR002" => $this->input->post('intensitas_pembelian')[$key],
+        "jml_pembelian" => $this->input->post('jml_pembelian')[$key],
+        "intensitas_pembelian" => $this->input->post('intensitas_pembelian')[$key],
+        "KR001" => $KR001,
+        "KR002" => $KR002,
         "KR003" => $this->input->post('sikap_pembeli')[$key],
         "KR004" => $this->input->post('cara_antar')[$key],
       );
@@ -227,7 +257,8 @@ class Penilaian extends CI_Controller {
       $thKriteria .= "<th>".$row['id_kriteria']."</br>".$row['kriteria']."</th>";
     }
 
-    $html="<table class='table table-bordered' style='text-align:center;'>
+    $html="<p style='margin-bottom: 0px;font-weight:bold;'>Nilai Real Kriteria Pelanggan</p>
+          <table class='table table-bordered' style='text-align:center;'>
             <thead>
               <tr>
                 <th>ID Pelanggan</th>
@@ -237,22 +268,37 @@ class Penilaian extends CI_Controller {
             </thead>
             <tbody>";
     $dtPelanggan = $this->db->query("
-      SELECT A.id_pelanggan, A.nm_pelanggan FROM tb_pelanggan A
-      INNER JOIN tb_penjualan B ON A.id_pelanggan = B.id_pelanggan
-      WHERE DATE_FORMAT(B.tgl_penjualan,'%Y') = '".$tahun."'
-      GROUP BY A.id_pelanggan, A.nm_pelanggan
-      ORDER BY A.id_pelanggan
+    SELECT 
+    A.id_pelanggan, B.nm_pelanggan, 
+    E.sub_kriteria jumlah_pembelian, F.sub_kriteria intensitas_pembelian, 
+    C.sub_kriteria sikap_pembeli, D.sub_kriteria pengantaran,
+    E.bobot bobot_jml_beli, F.bobot bobot_intens_beli,
+    C.bobot bobot_sikap, D.bobot bobot_antar 
+    FROM tb_real_kriteria_pelanggan A
+    LEFT JOIN tb_pelanggan B ON A.id_pelanggan = B.id_pelanggan 
+    LEFT JOIN tb_sub_kriteria E ON E.id_sub_kriteria = A.KR001
+    LEFT JOIN tb_sub_kriteria F ON F.id_sub_kriteria = A.KR002
+    LEFT JOIN tb_sub_kriteria C ON C.id_sub_kriteria = A.KR003
+    LEFT JOIN tb_sub_kriteria D ON D.id_sub_kriteria = A.KR004
+    where tahun = '".$this->input->post('tahun')."'
+    ORDER BY A.id_pelanggan
     ")->result_array();
     foreach($dtPelanggan as $row){
       $html .= "<tr>
                   <td>".$row['id_pelanggan']."</td>
                   <td>".$row['nm_pelanggan']."</td>
+                  <td>".$row['jumlah_pembelian']."</td>
+                  <td>".$row['intensitas_pembelian']."</td>
+                  <td>".$row['sikap_pembeli']."</td>
+                  <td>".$row['pengantaran']."</td>
               </tr>";
     }
 
     $html .= "</tbody></table>";
 
-    // echo $html;
+    $html .= "<table><tbody></tbody></table>";
+
+    echo $html;
 
   }
 

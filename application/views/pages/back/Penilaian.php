@@ -92,8 +92,8 @@
                 return data.id_pelanggan+"<br>"+data.nm_pelanggan
               }
             },
-            { "data": "KR001"},
-            { "data": "KR002"},
+            { "data": "jumlah_pembelian"},
+            { "data": "intensitas_pembelian"},
             { "data": "sikap_pembeli"},
             { "data": "pengantaran"},
         ]
