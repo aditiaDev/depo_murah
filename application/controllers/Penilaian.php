@@ -24,8 +24,8 @@ class Penilaian extends CI_Controller {
   public function getPenilaianByYear(){
     $data['data'] = $this->db->query("
       SELECT 
-      A.id_pelanggan, B.nm_pelanggan, 
-      E.sub_kriteria jumlah_pembelian, F.sub_kriteria intensitas_pembelian, 
+      A.id_pelanggan, B.nm_pelanggan, A.jml_pembelian, A.intensitas_pembelian, 
+      E.sub_kriteria jumlah_pembelian, F.sub_kriteria intens_pembelian, 
       C.sub_kriteria sikap_pembeli, D.sub_kriteria pengantaran
       FROM tb_real_kriteria_pelanggan A
       LEFT JOIN tb_pelanggan B ON A.id_pelanggan = B.id_pelanggan 
@@ -283,7 +283,15 @@ class Penilaian extends CI_Controller {
     where tahun = '".$this->input->post('tahun')."'
     ORDER BY A.id_pelanggan
     ")->result_array();
+
+    $arr2 = [];
     foreach($dtPelanggan as $row){
+
+      $arr2['KR001'][] = $row['bobot_jml_beli'] ;
+      $arr2['KR002'][] = $row['bobot_intens_beli'] ;
+      $arr2['KR003'][] = $row['bobot_sikap'] ;
+      $arr2['KR004'][] = $row['bobot_antar'] ;
+      
       $html .= "<tr>
                   <td>".$row['id_pelanggan']."</td>
                   <td>".$row['nm_pelanggan']."</td>
@@ -296,10 +304,99 @@ class Penilaian extends CI_Controller {
 
     $html .= "</tbody></table>";
 
-    $html .= "<table><tbody></tbody></table>";
+    $i=0;
+    foreach ($arr['data'] as $row) {
+      $id_kriteria = $row['id_kriteria'];
+      $arr['data'][$i]['max'] = max($arr2[$id_kriteria]) ;
+      $arr['data'][$i]['min'] = min($arr2[$id_kriteria]) ;
+      $i++;
+    }
 
+    //   echo "<pre>";
+    // print_r($arr);
+    // echo "</pre>";
+
+
+    $html .= "Tabel Normalisasi dan Utility Setiap Kriteria
+    <table class='table table-bordered' style='text-align:center;'>
+      <thead>
+        <tr>
+          <th rowspan='2'>ID Pelanggan</th>
+          <th rowspan='2'>Nama Pelanggan</th>
+          <th colspan='4'>Normalisasi Nilai</th>
+          <th colspan='4'>Nilai Utility</th>
+        </tr>
+        <tr>
+        ".$thKriteria.$thKriteria."
+        </tr>
+      </thead>
+      <tbody>";
+
+      $arr3 = [];
+      foreach ($dtPelanggan as $row) {
+
+          if($arr['data'][0]['max'] - $arr['data'][0]['min'] == 0){
+            $pembagi0 = 0;
+          }else{
+            $pembagi0 = $arr['data'][0]['max'] - $arr['data'][0]['min'];
+          }
+
+          if($arr['data'][1]['max'] - $arr['data'][1]['min'] == 0){
+            $pembagi1 = 0;
+          }else{
+            $pembagi1 = $arr['data'][1]['max'] - $arr['data'][1]['min'];
+          }
+
+          if($arr['data'][2]['max'] - $arr['data'][2]['min'] == 0){
+            $pembagi2 = 0;
+          }else{
+            $pembagi2 = $arr['data'][2]['max'] - $arr['data'][2]['min'];
+          }
+
+          if($arr['data'][3]['max'] - $arr['data'][3]['min'] == 0){
+            $pembagi3 = 0;
+          }else{
+            $pembagi3 = $arr['data'][3]['max'] - $arr['data'][3]['min'];
+          }
+
+          $U1 = ($row['bobot_jml_beli'] - $arr['data'][0]['min']) / $pembagi0;
+          $U2 = ($row['bobot_intens_beli'] - $arr['data'][1]['min']) / $pembagi1;
+          $U3 = ($row['bobot_sikap'] - $arr['data'][2]['min']) / $pembagi2;
+          $U4 = ($row['bobot_antar'] - $arr['data'][3]['min']) / $pembagi3;
+
+      
+
+        $html .= "<tr>
+                    <td>".$row['id_pelanggan']."</td>
+                    <td>".$row['nm_pelanggan']."</td>
+                    <td>".$row['bobot_jml_beli']."</td>
+                    <td>".$row['bobot_intens_beli']."</td>
+                    <td>".$row['bobot_sikap']."</td>
+                    <td>".$row['bobot_antar']."</td>
+                    <td>".$U1."</td>
+                    <td>".$U2."</td>
+                    <td>".$U3."</td>
+                    <td>".$U4."</td>
+                  </tr>";
+      }
+
+      $html .= "</tbody></table>";
+
+      $html .= "Nilai Akhir Smarter
+                <table class='table table-bordered' style='text-align:center;'>
+                  <thead>
+                    <tr>
+                      <th>ID Pelanggan</th>
+                      <th>Nama Pelanggan</th>
+                      ".$thKriteria."
+                    </tr>
+                  </thead>
+                  <tbody>";
+
+
+      $html .= "</tbody></table>";
     echo $html;
-
+    
   }
 
 }

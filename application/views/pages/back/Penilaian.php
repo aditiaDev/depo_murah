@@ -92,7 +92,7 @@
                 return data.id_pelanggan+"<br>"+data.nm_pelanggan
               }
             },
-            { "data": "jumlah_pembelian"},
+            { "data": "jml_pembelian"},
             { "data": "intensitas_pembelian"},
             { "data": "sikap_pembeli"},
             { "data": "pengantaran"},
