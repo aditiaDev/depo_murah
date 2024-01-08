@@ -333,39 +333,52 @@ class Penilaian extends CI_Controller {
       <tbody>";
 
       $arr3 = [];
+      $a=0;
       foreach ($dtPelanggan as $row) {
 
           if($arr['data'][0]['max'] - $arr['data'][0]['min'] == 0){
             $pembagi0 = 0;
+            $U1 = 0;
           }else{
             $pembagi0 = $arr['data'][0]['max'] - $arr['data'][0]['min'];
+            $U1 = ($row['bobot_jml_beli'] - $arr['data'][0]['min']) / $pembagi0;
           }
 
           if($arr['data'][1]['max'] - $arr['data'][1]['min'] == 0){
             $pembagi1 = 0;
+            $U2 = 0;
           }else{
             $pembagi1 = $arr['data'][1]['max'] - $arr['data'][1]['min'];
+            $U2 = ($row['bobot_intens_beli'] - $arr['data'][1]['min']) / $pembagi1;
           }
 
           if($arr['data'][2]['max'] - $arr['data'][2]['min'] == 0){
             $pembagi2 = 0;
+            $U3 = 0;
           }else{
             $pembagi2 = $arr['data'][2]['max'] - $arr['data'][2]['min'];
+            $U3 = ($row['bobot_sikap'] - $arr['data'][2]['min']) / $pembagi2;
           }
 
           if($arr['data'][3]['max'] - $arr['data'][3]['min'] == 0){
             $pembagi3 = 0;
+            $U4 = 0;
           }else{
             $pembagi3 = $arr['data'][3]['max'] - $arr['data'][3]['min'];
+            $U4 = ($row['bobot_antar'] - $arr['data'][3]['min']) / $pembagi3;
           }
 
-          $U1 = ($row['bobot_jml_beli'] - $arr['data'][0]['min']) / $pembagi0;
-          $U2 = ($row['bobot_intens_beli'] - $arr['data'][1]['min']) / $pembagi1;
-          $U3 = ($row['bobot_sikap'] - $arr['data'][2]['min']) / $pembagi2;
-          $U4 = ($row['bobot_antar'] - $arr['data'][3]['min']) / $pembagi3;
-
+          // $arr3['KR001'][$a] = $U1 * $arr['data'][0]['bobot'];
+          // $arr3['KR002'][$a] = $U2 * $arr['data'][1]['bobot'];
+          // $arr3['KR003'][$a] = $U3 * $arr['data'][2]['bobot'];
+          // $arr3['KR004'][$a] = $U4 * $arr['data'][3]['bobot'];
       
+          $arr3[$row['id_pelanggan']]['KR001'] = $U1 * $arr['data'][0]['bobot'];
+          $arr3[$row['id_pelanggan']]['KR002'] = $U2 * $arr['data'][1]['bobot'];
+          $arr3[$row['id_pelanggan']]['KR003'] = $U3 * $arr['data'][2]['bobot'];
+          $arr3[$row['id_pelanggan']]['KR004'] = $U4 * $arr['data'][3]['bobot'];
 
+          $arr3[$row['id_pelanggan']]['TOTAL'] = ($U1 * $arr['data'][0]['bobot']) + ($U2 * $arr['data'][1]['bobot']) + ($U3 * $arr['data'][2]['bobot']) + ($U4 * $arr['data'][3]['bobot']);
         $html .= "<tr>
                     <td>".$row['id_pelanggan']."</td>
                     <td>".$row['nm_pelanggan']."</td>
@@ -378,6 +391,8 @@ class Penilaian extends CI_Controller {
                     <td>".$U3."</td>
                     <td>".$U4."</td>
                   </tr>";
+        
+        $a++;
       }
 
       $html .= "</tbody></table>";
@@ -393,9 +408,12 @@ class Penilaian extends CI_Controller {
                   </thead>
                   <tbody>";
 
-
       $html .= "</tbody></table>";
-    echo $html;
+
+      echo "<pre>";
+      print_r($arr3);
+      echo "</pre>";
+    // echo $html;
     
   }
 
