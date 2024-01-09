@@ -404,16 +404,53 @@ class Penilaian extends CI_Controller {
                       <th>ID Pelanggan</th>
                       <th>Nama Pelanggan</th>
                       ".$thKriteria."
+                      <th>Total</th>
+                      <th>Ranking</th>
                     </tr>
                   </thead>
                   <tbody>";
 
-      $html .= "</tbody></table>";
+      
 
-      echo "<pre>";
-      print_r($arr3);
-      echo "</pre>";
-    // echo $html;
+      // echo "<pre>";
+      // print_r($arr3);
+      // echo "</pre>";
+
+      $query = "DELETE FROM tb_ranking WHERE tahun = '".$this->input->post('tahun')."'";
+      $this->db->query($query);
+
+      foreach($arr3 as $key=>$val){
+        $query = "INSERT INTO tb_ranking (id_pelanggan, tahun, KR001, KR002, KR003, KR004, TOTAL) VALUES(
+          '".$key."', '".$this->input->post('tahun')."', '".$val['KR001']."', '".$val['KR002']."', '".$val['KR003']."', '".$val['KR004']."', '".$val['TOTAL']."'
+        )";
+        $this->db->query($query);
+      }
+
+      $dtRanking = $this->db->query("
+        SELECT 
+        A.id_pelanggan, B.nm_pelanggan, A.KR001, A.KR002, A.KR003, A.KR004, A.TOTAL
+        FROM tb_ranking A
+        LEFT JOIN tb_pelanggan B ON A.id_pelanggan = B.id_pelanggan
+        WHERE A.tahun = '".$this->input->post('tahun')."' 
+        ORDER BY A.TOTAL DESC
+      ")->result();
+      $no=1;
+      foreach($dtRanking as $row){
+        $html .= "<tr>
+                    <td>".$row->id_pelanggan."</td>
+                    <td>".$row->nm_pelanggan."</td>
+                    <td>".$row->KR001."</td>
+                    <td>".$row->KR002."</td>
+                    <td>".$row->KR003."</td>
+                    <td>".$row->KR004."</td>
+                    <td>".$row->TOTAL."</td>
+                    <td>".$no."</td>
+                  </tr>";
+        $no++;
+      }
+
+      $html .= "</tbody></table>";
+    echo $html;
     
   }
 
