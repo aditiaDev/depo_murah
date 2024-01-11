@@ -143,19 +143,20 @@ class Penjualan extends CI_Controller {
         ");
       }
 
-      // $id_barang_keluar = $this->generateIdBarangKeluar();
+      $id_barang_keluar = $this->generateIdBarangKeluar();
 
-      // $dataDtl2 = array(
-      //   "id_barang_keluar" => $id_barang_keluar,
-      //   "doc_referensi" => $id,
-      //   "doc_tipe" => "PENJUALAN",
-      //   "tgl_barang_keluar" => date('Y-m-d H:i:s'),
-      //   "id_barang" => $this->input->post('id_barang')[$key],
-      //   "jumlah" => $this->input->post('qty')[$key],
-      //   "harga" => $this->input->post('harga')[$key],
-      // );
+      $dataDtl2 = array(
+        "id_barang_keluar" => $id_barang_keluar,
+        "id_barang" => $this->input->post('id_barang')[$key],
+        "id_cabang" => $id_cabang,
+        "doc_referensi" => $id,
+        "doc_tipe" => "PENJUALAN",
+        "tgl_keluar" => date('Y-m-d H:i:s'),
+        "jumlah" => $this->input->post('qty')[$key],
+        "harga" => $this->input->post('harga')[$key],
+      );
 
-      // $this->db->insert('tb_barang_keluar', $dataDtl2);
+      $this->db->insert('tb_barang_keluar', $dataDtl2);
 
       $this->db->query("
         UPDATE tb_stock_cabang SET stock = ( stock - ".$this->input->post('qty')[$key]." ) 

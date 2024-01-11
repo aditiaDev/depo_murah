@@ -56,6 +56,7 @@
             <ul class="nav child_menu">
               <li><a href="<?php echo base_url("transaksi/penjualan")?>">Penjualan</a></li>
               <li><a href="<?php echo base_url("transaksi/datapenjualan")?>">Data Penjualan</a></li>
+              <li><a href="<?php echo base_url("transaksi/barang_masuk")?>">Data Barang Masuk</a></li>
             </ul>
           </li>
           

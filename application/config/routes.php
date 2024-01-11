@@ -66,3 +66,4 @@ $route['spk/perhitungan'] = 'penilaian/perhitungan';
 
 $route['transaksi/penjualan'] = 'penjualan';
 $route['transaksi/datapenjualan'] = 'penjualan/datapenjualan';
+$route['transaksi/barang_masuk'] = 'barang_masuk';

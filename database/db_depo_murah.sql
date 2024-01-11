@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 08 Jan 2024 pada 09.45
--- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.0.30
+-- Waktu pembuatan: 12 Jan 2024 pada 00.47
+-- Versi server: 10.4.27-MariaDB
+-- Versi PHP: 7.4.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -50,6 +50,24 @@ INSERT INTO `tb_barang` (`id_barang`, `id_kategori_barang`, `nm_barang`, `harga_
 -- --------------------------------------------------------
 
 --
+-- Struktur dari tabel `tb_barang_keluar`
+--
+
+CREATE TABLE `tb_barang_keluar` (
+  `id_barang_keluar` varchar(15) NOT NULL,
+  `id_barang` varchar(15) DEFAULT NULL,
+  `id_cabang` varchar(15) DEFAULT NULL,
+  `doc_tipe` varchar(30) DEFAULT NULL,
+  `tgl_keluar` datetime DEFAULT NULL,
+  `ket` varchar(255) DEFAULT NULL,
+  `jumlah` float DEFAULT NULL,
+  `harga` float DEFAULT NULL,
+  `doc_referensi` varchar(30) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Struktur dari tabel `tb_barang_masuk`
 --
 
@@ -57,9 +75,11 @@ CREATE TABLE `tb_barang_masuk` (
   `id_barang_masuk` varchar(15) NOT NULL,
   `id_barang` varchar(15) DEFAULT NULL,
   `id_cabang` varchar(255) DEFAULT NULL,
+  `doc_tipe` varchar(50) NOT NULL,
   `tgl_masuk` datetime DEFAULT NULL,
   `ket` varchar(500) DEFAULT NULL,
-  `jumlah` float DEFAULT NULL
+  `jumlah` float DEFAULT NULL,
+  `harga` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -475,6 +495,12 @@ INSERT INTO `tb_user` (`id_user`, `username`, `password`, `nm_pengguna`, `level`
 --
 ALTER TABLE `tb_barang`
   ADD PRIMARY KEY (`id_barang`);
+
+--
+-- Indeks untuk tabel `tb_barang_keluar`
+--
+ALTER TABLE `tb_barang_keluar`
+  ADD PRIMARY KEY (`id_barang_keluar`);
 
 --
 -- Indeks untuk tabel `tb_barang_masuk`
