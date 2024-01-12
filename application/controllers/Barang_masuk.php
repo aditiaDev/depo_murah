@@ -23,4 +23,12 @@ class Barang_masuk extends CI_Controller {
     echo json_encode($data);
   }
 
+  public function inputbarangmasuk(){
+    $this->load->view('template/back/header');
+    $this->load->view('template/back/sidebar');
+    $this->load->view('template/back/topnav');
+    $this->load->view('pages/back/inputbarangmasuk');
+    $this->load->view('template/back/footer');
+  }
+
 }

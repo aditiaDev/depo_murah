@@ -1,7 +1,7 @@
 <link href="<?php echo base_url(); ?>assets/datatable/datatables.min.css" rel="stylesheet">
 <link href="<?php echo base_url(); ?>assets/toastr/toastr.min.css" rel="stylesheet">
 <link href="<?php echo base_url(); ?>assets/select2/css/select2.min.css" rel="stylesheet">
-<a href="javascript:;" id="add_data" class="float" data-toggle="tooltip" data-placement="left" title="Tambah Data">
+<a href="<?php echo base_url("transaksi/inputbarangmasuk")?>" id="add_data" class="float" data-toggle="tooltip" data-placement="left" title="Tambah Data">
   <i class="fa fa-plus my-float"></i>
 </a>
 <div class="right_col" role="main">
