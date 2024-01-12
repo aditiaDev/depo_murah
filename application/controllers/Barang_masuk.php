@@ -24,10 +24,15 @@ class Barang_masuk extends CI_Controller {
   }
 
   public function inputbarangmasuk(){
+    $data['cabang'] = $this->db->query(
+      "SELECT A.id_cabang, B.nm_cabang FROM tb_user A 
+      LEFT JOIN tb_cabang B ON A.id_cabang = B.id_cabang
+      WHERE A.id_user = '".$this->session->userdata('id_user')."'"
+    )->result();
     $this->load->view('template/back/header');
     $this->load->view('template/back/sidebar');
     $this->load->view('template/back/topnav');
-    $this->load->view('pages/back/inputbarangmasuk');
+    $this->load->view('pages/back/inputbarangmasuk', $data);
     $this->load->view('template/back/footer');
   }
 
