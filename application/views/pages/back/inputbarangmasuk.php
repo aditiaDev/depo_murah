@@ -50,12 +50,21 @@
                 <div class="col-sm-3">
                   <div class="form-group">
                     <label>Dokumen Tipe</label>
-                    <select name="doc_type" class="form-control">
+                    <select name="doc_tipe" class="form-control" required>
                       <option value="" selected disabled>Pilih</option>
                       <option value="PEMBELIAN">Pembelian</option>
                       <option value="SAMPLE">Sample dari Vendor</option>
                       <option value="LAIN-LAIN">Lain-lain</option>
                     </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label>Keterangan</label>
+                    <textarea name="ket" rows="3" class="form-control"></textarea>
                   </div>
                 </div>
               </div>
@@ -75,11 +84,11 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <td style="width: 200px;"><input type="text" name="id_barang" class="form-control" readonly></td>
+                        <td style="width: 200px;"><input type="text" name="id_barang" class="form-control" required readonly></td>
                         <td style="width:50px;text-align: center;"><button type="button" id="btnBarang" class="btn btn-secondary"><i class="fa fa-list"></i></button></td>
-                        <td></td>
-                        <td style="width: 200px;"><input type="text" name="jumlah" class="form-control"></td>
-                        <td style="width: 200px;"><input type="text" name="harga" class="form-control"></td>
+                        <td class="brgdesc"></td>
+                        <td style="width: 200px;"><input type="text" name="jumlah" onchange="calculateSubTotal()" readonly required class="form-control"></td>
+                        <td style="width: 200px;"><input type="text" name="harga" onchange="calculateSubTotal()" readonly required class="form-control"></td>
                         <td style="width: 200px;"><input type="text" name="subtotal" class="form-control" readonly></td>
                       </tr>
                     </tbody>
@@ -91,7 +100,7 @@
               <div class="form-group row">
                 <div class="col-md-12" style="text-align:center;">
                   <button type="button" class="btn btn-warning" id="btnCancel">Cancel</button>
-                  <button type="button" class="btn btn-success" id="btnSimpan">Simpan</button>
+                  <button type="submit" class="btn btn-success" id="btnSimpan">Simpan</button>
                 </div>
               </div>
             </form>
@@ -143,7 +152,7 @@
 
   function REFRESH_BARANG(){
     $('#tb_barang').DataTable().destroy();
-    tb_data =  $("#tb_barang").DataTable({
+    tb_barang =  $("#tb_barang").DataTable({
         "order": [[ 1, "asc" ],[ 0, "asc" ]],
         "pageLength": 25,
         "autoWidth": false,
@@ -160,4 +169,64 @@
       }
     )
   }
+
+  $('body').on( 'dblclick', '#tb_barang tbody tr', function (e) {
+      let Rowdata = tb_barang.row( this ).data();
+      let id_barang = Rowdata.id_barang;
+      let nm_barang = Rowdata.nm_barang;
+      let harga_barang = Rowdata.harga_barang;
+
+      $("[name='id_barang']").val(id_barang)
+      $(".brgdesc").text(nm_barang)
+      $("[name='harga']").val(harga_barang)
+
+      $("[name='harga']").attr('readonly', false)
+      $("[name='jumlah']").attr('readonly', false)
+      $("[name='jumlah']").val('')
+      $("[name='subtotal']").val('')
+      
+      $('#modal_barang').modal('hide');
+  });
+
+  function calculateSubTotal(){
+    let jumlah = parseFloat($("[name='jumlah']").val())
+    let harga = parseFloat($("[name='harga']").val())
+
+    let  subTotal = jumlah * harga
+    $("[name='subtotal']").val(subTotal)
+  }
+
+  $("#FRM_DATA").submit(function(){
+    event.preventDefault()
+    if($("[name='id_barang']").val() == ""){
+      alert("Pilih Barang")
+      return
+    }
+
+    let formData = $("#FRM_DATA").serialize();
+    $.ajax({
+      url: "<?php echo site_url('barang_masuk/saveData') ?>",
+      type: "POST",
+      data: formData,
+      dataType: "JSON",
+      beforeSend: function () {
+        $("#overlay").fadeIn(300)
+      },
+      complete: function () {
+        $("#overlay").hide();
+      },
+      success: function(data){
+        // console.log(data)
+        if (data.status == "success") {
+          toastr.info(data.message)
+          setTimeout(() => {
+            window.location = "<?php echo base_url("transaksi/barang_masuk")?>"
+          }, 3000);
+
+        }else{
+          toastr.error(data.message)
+        }
+      }
+    })
+  })
 </script>

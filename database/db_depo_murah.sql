@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 12 Jan 2024 pada 00.47
+-- Waktu pembuatan: 15 Jan 2024 pada 00.50
 -- Versi server: 10.4.27-MariaDB
 -- Versi PHP: 7.4.33
 
@@ -62,8 +62,17 @@ CREATE TABLE `tb_barang_keluar` (
   `ket` varchar(255) DEFAULT NULL,
   `jumlah` float DEFAULT NULL,
   `harga` float DEFAULT NULL,
-  `doc_referensi` varchar(30) DEFAULT NULL
+  `doc_referensi` varchar(30) DEFAULT NULL,
+  `total` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `tb_barang_keluar`
+--
+
+INSERT INTO `tb_barang_keluar` (`id_barang_keluar`, `id_barang`, `id_cabang`, `doc_tipe`, `tgl_keluar`, `ket`, `jumlah`, `harga`, `doc_referensi`, `total`) VALUES
+('BK01240001', 'BSI00002', 'CB001', 'PENJUALAN', '2024-01-14 09:57:23', NULL, 3, 500000, 'J2400032', 1500000),
+('BK01240002', 'KRM00001', 'CB001', 'PENJUALAN', '2024-01-14 09:57:23', NULL, 1, 100000, 'J2400032', 100000);
 
 -- --------------------------------------------------------
 
@@ -79,8 +88,16 @@ CREATE TABLE `tb_barang_masuk` (
   `tgl_masuk` datetime DEFAULT NULL,
   `ket` varchar(500) DEFAULT NULL,
   `jumlah` float DEFAULT NULL,
-  `harga` int(11) NOT NULL
+  `harga` int(11) NOT NULL,
+  `total` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `tb_barang_masuk`
+--
+
+INSERT INTO `tb_barang_masuk` (`id_barang_masuk`, `id_barang`, `id_cabang`, `doc_tipe`, `tgl_masuk`, `ket`, `jumlah`, `harga`, `total`) VALUES
+('BM01240001', 'BSI00002', 'CB001', 'PEMBELIAN', '2024-01-14 09:53:21', 'Pembelian nomor struk XXXXX', 79, 500000, 39500000);
 
 -- --------------------------------------------------------
 
@@ -159,7 +176,9 @@ INSERT INTO `tb_dtl_penjualan` (`id_dtl_penjualan`, `id_penjualan`, `id_barang`,
 (38, 'J2400028', 'BSI00002', 1, 500000, 500000),
 (39, 'J2400029', 'KRM00001', 1, 100000, 100000),
 (40, 'J2400030', 'KRM00001', 1, 100000, 100000),
-(41, 'J2400031', 'SMN00001', 1, 150000, 150000);
+(41, 'J2400031', 'SMN00001', 1, 150000, 150000),
+(42, 'J2400032', 'BSI00002', 3, 500000, 1500000),
+(43, 'J2400032', 'KRM00001', 1, 100000, 100000);
 
 -- --------------------------------------------------------
 
@@ -226,7 +245,7 @@ CREATE TABLE `tb_pelanggan` (
 INSERT INTO `tb_pelanggan` (`id_pelanggan`, `nm_pelanggan`, `alamat`, `no_pelanggan`, `point_pelanggan`, `tgl_register`) VALUES
 ('GUEST', 'Non Member', NULL, NULL, 0, '2024-01-01'),
 ('P2400001', 'Pelanggan 1', 'Alamat', '08524465132', 10, '2024-01-01'),
-('P2400002', 'Pelanggan 2', 'Alamat', '08524465133', 10, '2024-01-01'),
+('P2400002', 'Pelanggan 2', 'Alamat', '08524465133', 110, '2024-01-01'),
 ('P2400003', 'Pelanggan 3', 'Alamat', '08524465134', 10, '2024-01-01'),
 ('P2400004', 'Pelanggan 4', 'Alamat', '08524465135', 100, '2024-01-01'),
 ('P2400005', 'Pelanggan 5', 'Alamat', '08524465136', 100, '2024-01-01'),
@@ -311,7 +330,8 @@ INSERT INTO `tb_penjualan` (`id_penjualan`, `tgl_penjualan`, `id_pelanggan`, `id
 ('J2400028', '2024-01-08 07:51:56', 'P2400005', 'CB001', 100, 500000, 500000, 'U2400002'),
 ('J2400029', '2024-01-08 07:52:15', 'P2400005', 'CB001', 100, 100000, 100000, 'U2400002'),
 ('J2400030', '2024-01-08 07:52:35', 'P2400001', 'CB001', 100, 100000, 100000, 'U2400002'),
-('J2400031', '2024-01-08 07:52:58', 'P2400005', 'CB001', 10, 150000, 150000, 'U2400002');
+('J2400031', '2024-01-08 07:52:58', 'P2400005', 'CB001', 10, 150000, 150000, 'U2400002'),
+('J2400032', '2024-01-14 09:57:23', 'P2400002', 'CB001', 10, 1600000, 1600000, 'U2400002');
 
 -- --------------------------------------------------------
 
@@ -400,7 +420,8 @@ INSERT INTO `tb_sikap_pelanggan` (`id_sikap`, `id_pelanggan`, `id_penjualan`, `i
 ('SK20240016', 'P2400005', 'J2400028', 'SK010'),
 ('SK20240017', 'P2400005', 'J2400029', 'SK011'),
 ('SK20240018', 'P2400001', 'J2400030', 'SK012'),
-('SK20240019', 'P2400005', 'J2400031', 'SK010');
+('SK20240019', 'P2400005', 'J2400031', 'SK010'),
+('SK20240020', 'P2400002', 'J2400032', 'SK010');
 
 -- --------------------------------------------------------
 
@@ -420,9 +441,9 @@ CREATE TABLE `tb_stock_cabang` (
 --
 
 INSERT INTO `tb_stock_cabang` (`id_stock`, `id_cabang`, `id_barang`, `stock`) VALUES
-(1, 'CB001', 'BSI00002', 921),
+(1, 'CB001', 'BSI00002', 997),
 (2, 'CB001', 'BSI00001', 454),
-(3, 'CB001', 'KRM00001', 9669),
+(3, 'CB001', 'KRM00001', 9668),
 (4, 'CB001', 'SMN00001', 249);
 
 -- --------------------------------------------------------
@@ -588,7 +609,7 @@ ALTER TABLE `tb_user`
 -- AUTO_INCREMENT untuk tabel `tb_dtl_penjualan`
 --
 ALTER TABLE `tb_dtl_penjualan`
-  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id_dtl_penjualan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_ranking`

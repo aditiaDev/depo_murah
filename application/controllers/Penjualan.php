@@ -50,14 +50,14 @@ class Penjualan extends CI_Controller {
   }
 
   public function generateIdBarangKeluar(){
-    $unik = 'K'.date('y');
+    $unik = 'BK'.date('my');
     $kode = $this->db->query("SELECT MAX(id_barang_keluar) LAST_NO FROM tb_barang_keluar WHERE id_barang_keluar LIKE '".$unik."%'")->row()->LAST_NO;
 
-    $urutan = (int) substr($kode, 3, 5);
+    $urutan = (int) substr($kode, 6, 4);
     $urutan++;
     
     $huruf = $unik;
-    $kode = $huruf . sprintf("%05s", $urutan);
+    $kode = $huruf . sprintf("%04s", $urutan);
     return $kode;
   }
 
@@ -144,6 +144,7 @@ class Penjualan extends CI_Controller {
       }
 
       $id_barang_keluar = $this->generateIdBarangKeluar();
+      $total = $this->input->post('qty')[$key] * $this->input->post('harga')[$key];
 
       $dataDtl2 = array(
         "id_barang_keluar" => $id_barang_keluar,
@@ -154,6 +155,7 @@ class Penjualan extends CI_Controller {
         "tgl_keluar" => date('Y-m-d H:i:s'),
         "jumlah" => $this->input->post('qty')[$key],
         "harga" => $this->input->post('harga')[$key],
+        "total" => $total,
       );
 
       $this->db->insert('tb_barang_keluar', $dataDtl2);

@@ -28,7 +28,103 @@
     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
       <div class="menu_section">
 
+      <?php
+      if($this->session->userdata('level') == "PEMILIK"){
+      ?>
         <ul class="nav side-menu">
+          <li class="<?= ($this->uri->segment(1) == 'home' || $this->uri->segment(1) == '') ? 'current-page' : '' ?>"><a href="<?php echo base_url("home")?>"><i class="fa fa-home"></i> Home</a></li>
+          <li class="<?= ($this->uri->segment(1) == 'master') ? 'current-page' : '' ?>">
+            <a><i class="fa fa-desktop"></i> Master Data <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="<?php echo base_url("master/cabang")?>">Cabang</a></li>
+              <li><a href="<?php echo base_url("master/user")?>">User</a></li>
+              <li><a href="<?php echo base_url("master/pelanggan")?>">Pelanggan</a></li>
+              <li><a href="<?php echo base_url("master/kriteria")?>">Kriteria</a></li>
+              <li><a href="<?php echo base_url("master/sub_kriteria")?>">Sub Kriteria</a></li>
+            </ul>
+          </li>
+
+          <li class="<?= ($this->uri->segment(1) == 'spk') ? 'current-page' : '' ?>">
+            <a><i class="fa fa-list"></i> Pendukung Keputusan <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="<?php echo base_url("spk/penilaian")?>">Input Nilai SPK</a></li>
+              <li><a href="<?php echo base_url("spk/perhitungan")?>">Perhitungan SPK</a></li>
+            </ul>
+          </li>
+
+          <li class="<?= ($this->uri->segment(1) == 'transaksi') ? 'current-page' : '' ?>">
+            <a><i class="fa fa-shopping-cart"></i> Transaksi <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="<?php echo base_url("transaksi/datapenjualan")?>">Data Penjualan</a></li>
+              <li><a href="<?php echo base_url("transaksi/barang_masuk")?>">Data Barang Masuk</a></li>
+            </ul>
+          </li>
+          
+        </ul>
+      <?php
+      }elseif($this->session->userdata('level') == "KEPALA TOKO"){
+      ?>
+        <ul class="nav side-menu">
+          <li class="<?= ($this->uri->segment(1) == 'home' || $this->uri->segment(1) == '') ? 'current-page' : '' ?>"><a href="<?php echo base_url("home")?>"><i class="fa fa-home"></i> Home</a></li>
+          <li class="<?= ($this->uri->segment(1) == 'master') ? 'current-page' : '' ?>">
+            <a><i class="fa fa-desktop"></i> Master Data <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="<?php echo base_url("master/kategori")?>">Kategori</a></li>
+              <li><a href="<?php echo base_url("master/barang")?>">Barang</a></li>
+            </ul>
+          </li>
+
+          <li class="<?= ($this->uri->segment(1) == 'transaksi') ? 'current-page' : '' ?>">
+            <a><i class="fa fa-shopping-cart"></i> Transaksi <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="<?php echo base_url("transaksi/penjualan")?>">Penjualan</a></li>
+              <li><a href="<?php echo base_url("transaksi/datapenjualan")?>">Data Penjualan</a></li>
+              <li><a href="<?php echo base_url("transaksi/barang_masuk")?>">Data Barang Masuk</a></li>
+            </ul>
+          </li>
+          
+        </ul>
+      <?php
+      }elseif($this->session->userdata('level') == "KASIR"){
+      ?>
+        <ul class="nav side-menu">
+          <li class="<?= ($this->uri->segment(1) == 'home' || $this->uri->segment(1) == '') ? 'current-page' : '' ?>"><a href="<?php echo base_url("home")?>"><i class="fa fa-home"></i> Home</a></li>
+          <li class="<?= ($this->uri->segment(1) == 'master') ? 'current-page' : '' ?>">
+            <a><i class="fa fa-desktop"></i> Master Data <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="<?php echo base_url("master/pelanggan")?>">Pelanggan</a></li>
+            </ul>
+          </li>
+
+
+          <li class="<?= ($this->uri->segment(1) == 'transaksi') ? 'current-page' : '' ?>">
+            <a><i class="fa fa-shopping-cart"></i> Transaksi <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="<?php echo base_url("transaksi/penjualan")?>">Penjualan</a></li>
+              <li><a href="<?php echo base_url("transaksi/datapenjualan")?>">Data Penjualan</a></li>
+            </ul>
+          </li>
+          
+        </ul>
+      <?php
+      }elseif($this->session->userdata('level') == "ADMIN GUDANG"){
+      ?>
+        <ul class="nav side-menu">
+          <li class="<?= ($this->uri->segment(1) == 'home' || $this->uri->segment(1) == '') ? 'current-page' : '' ?>"><a href="<?php echo base_url("home")?>"><i class="fa fa-home"></i> Home</a></li>
+
+
+          <li class="<?= ($this->uri->segment(1) == 'transaksi') ? 'current-page' : '' ?>">
+            <a><i class="fa fa-shopping-cart"></i> Transaksi <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+            <li><a href="<?php echo base_url("transaksi/barang_masuk")?>">Data Barang Masuk</a></li>
+            </ul>
+          </li>
+          
+        </ul>
+      <?php
+      }
+      ?>
+        <!-- <ul class="nav side-menu">
           <li class="<?= ($this->uri->segment(1) == 'home' || $this->uri->segment(1) == '') ? 'current-page' : '' ?>"><a href="<?php echo base_url("home")?>"><i class="fa fa-home"></i> Home</a></li>
           <li class="<?= ($this->uri->segment(1) == 'master') ? 'current-page' : '' ?>">
             <a><i class="fa fa-desktop"></i> Master Data <span class="fa fa-chevron-down"></span></a>
@@ -60,7 +156,7 @@
             </ul>
           </li>
           
-        </ul>
+        </ul> -->
       </div>
 
     </div>
