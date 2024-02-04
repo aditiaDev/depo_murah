@@ -172,18 +172,28 @@ class Penjualan extends CI_Controller {
   }
 
   public function getAllData(){
-    $id_cabang = $this->db->query("
-      SELECT id_cabang FROM tb_user WHERE id_user = '".$this->session->userdata('id_user')."'
-    ")->row()->id_cabang;
+    if($this->session->userdata('level') == "PEMILIK"){
+      $data['data'] = $this->db->query("
+        select A.id_penjualan, A.tgl_penjualan, B.nm_pelanggan,   
+        C.nm_cabang, A.diskon, A.tot_harga_barang, A.tot_akhir 
+        from tb_penjualan A
+        left join tb_pelanggan B on A.id_pelanggan = B.id_pelanggan 
+        left join tb_cabang C on A.id_cabang = C.id_cabang 
+      ")->result();
+    }else{
+      $query = "SELECT id_cabang FROM tb_user WHERE id_user = '".$this->session->userdata('id_user')."'";
+      $id_cabang = $this->db->query($query)->row()->id_cabang;
 
-    $data['data'] = $this->db->query("
-      select A.id_penjualan, A.tgl_penjualan, B.nm_pelanggan,   
-      C.nm_cabang, A.diskon, A.tot_harga_barang, A.tot_akhir 
-      from tb_penjualan A
-      left join tb_pelanggan B on A.id_pelanggan = B.id_pelanggan 
-      left join tb_cabang C on A.id_cabang = C.id_cabang 
-      where A.id_cabang = '".$id_cabang."'
-    ")->result();
+      $data['data'] = $this->db->query("
+        select A.id_penjualan, A.tgl_penjualan, B.nm_pelanggan,   
+        C.nm_cabang, A.diskon, A.tot_harga_barang, A.tot_akhir 
+        from tb_penjualan A
+        left join tb_pelanggan B on A.id_pelanggan = B.id_pelanggan 
+        left join tb_cabang C on A.id_cabang = C.id_cabang 
+        where A.id_cabang = '".$id_cabang."'
+      ")->result();
+    }
+    
     echo json_encode($data);
   }
 

@@ -59,6 +59,13 @@
               <li><a href="<?php echo base_url("transaksi/barang_masuk")?>">Data Barang Masuk</a></li>
             </ul>
           </li>
+
+          <li class="<?= ($this->uri->segment(1) == 'transaksi') ? 'current-page' : '' ?>">
+            <a><i class="fa fa-print"></i> Laporan <span class="fa fa-chevron-down"></span></a>
+            <ul class="nav child_menu">
+              <li><a href="<?php echo base_url("report/penjualan")?>">Penjualan</a></li>
+            </ul>
+          </li>
           
         </ul>
       <?php

@@ -69,3 +69,4 @@ $route['transaksi/datapenjualan'] = 'penjualan/datapenjualan';
 $route['transaksi/barang_masuk'] = 'barang_masuk';
 $route['transaksi/inputbarangmasuk'] = 'barang_masuk/inputbarangmasuk';
 
+$route['laporan/penjualan'] = 'report/penjualan';

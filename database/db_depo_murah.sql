@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 15 Jan 2024 pada 00.50
+-- Waktu pembuatan: 04 Feb 2024 pada 09.09
 -- Versi server: 10.4.27-MariaDB
 -- Versi PHP: 7.4.33
 
@@ -351,6 +351,22 @@ CREATE TABLE `tb_ranking` (
   `RANKING` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `tb_ranking`
+--
+
+INSERT INTO `tb_ranking` (`id_ranking`, `id_pelanggan`, `tahun`, `KR001`, `KR002`, `KR003`, `KR004`, `TOTAL`, `RANKING`) VALUES
+(1, 'P2400001', '2024', 0.521, 0.271, 0.0663057, 0.011417, 0.869723, 0),
+(2, 'P2400002', '2024', 0.521, 0, 0.0663057, 0.063, 0.650306, 0),
+(3, 'P2400003', '2024', 0.521, 0, 0.146, 0.063, 0.73, 0),
+(4, 'P2400004', '2024', 0, 0, 0.146, 0.063, 0.209, 0),
+(5, 'P2400005', '2024', 0, 0.271, 0, 0.011417, 0.282417, 0),
+(6, 'P2400006', '2024', 0.236611, 0, 0.146, 0.0286114, 0.411223, 0),
+(7, 'P2400007', '2024', 0, 0, 0.0663057, 0.063, 0.129306, 0),
+(8, 'P2400008', '2024', 0, 0, 0.146, 0, 0.146, 0),
+(9, 'P2400009', '2024', 0, 0, 0.146, 0.0286114, 0.174611, 0),
+(10, 'P2400010', '2024', 0, 0, 0.0663057, 0.063, 0.129306, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -444,7 +460,9 @@ INSERT INTO `tb_stock_cabang` (`id_stock`, `id_cabang`, `id_barang`, `stock`) VA
 (1, 'CB001', 'BSI00002', 997),
 (2, 'CB001', 'BSI00001', 454),
 (3, 'CB001', 'KRM00001', 9668),
-(4, 'CB001', 'SMN00001', 249);
+(4, 'CB001', 'SMN00001', 249),
+(5, 'CB002', 'SMN00001', 100),
+(6, 'CB002', 'BSI00002', 500);
 
 -- --------------------------------------------------------
 
@@ -615,13 +633,13 @@ ALTER TABLE `tb_dtl_penjualan`
 -- AUTO_INCREMENT untuk tabel `tb_ranking`
 --
 ALTER TABLE `tb_ranking`
-  MODIFY `id_ranking` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_ranking` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_stock_cabang`
 --
 ALTER TABLE `tb_stock_cabang`
-  MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_stock` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
